@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.llc.dao.LogDao">
+    <resultMap id="BaseResultMap" type="com.llc.model.Log" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="log_source" property="log_source" jdbcType="VARCHAR" />
+        <result column="log_time" property="log_time" jdbcType="BIGINT" />
+        <result column="log_topic" property="log_topic" jdbcType="VARCHAR" />
+        <result column="time" property="time" jdbcType="VARCHAR" />
+        <result column="device_id" property="device_id" jdbcType="VARCHAR" />
+        <result column="ip" property="ip" jdbcType="VARCHAR" />
+        <result column="member_id" property="member_id" jdbcType="VARCHAR" />
+        <result column="log_level" property="log_level" jdbcType="VARCHAR" />
+        <result column="modtrans" property="modtrans" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+    </resultMap>
+
+     <sql id="Base_Column_List" >
+      id,log_source,log_time,log_topic,time,device_id,ip, member_id,log_level,modtrans,content
+    </sql>
+    <select id="getLog" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+            select
+        <include refid="Base_Column_List" />
+            from realtimelog20160622
+         where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <insert id="addLog" parameterType="com.llc.model.Log"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into realtimelog20160621(log_source,log_time,log_topic,time,device_id,ip,member_id,log_level,modtrans,content) values (#{log_source},#{log_time},#{log_topic},#{time},#{device_id},#{ip},#{member_id},#{log_level},#{modtrans},#{content})
+    </insert>
+</mapper>

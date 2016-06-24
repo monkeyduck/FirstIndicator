@@ -1,0 +1,19 @@
+<hibernate-configuration>
+
+    <session-factory>
+
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+
+        <property name="hibernate.connection.url">rdsu1u8uau8193m7j1b7.mysql.rds.aliyuncs.com</property>
+
+        <property name="hibernate.connection.username">aibasis</property>
+
+        <property name="hibernate.connection.password">Wenjin1411</property>
+
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+    </session-factory>
+
+    <mapping resource="Log.hbm.xml"/>
+
+</hibernate-configuration>
