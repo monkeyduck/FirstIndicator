@@ -37,13 +37,13 @@ public class LogController {
     }
 
     @RequestMapping("/showLog")
-    public String searchLogById(HttpServletRequest request, HttpServletRequest response,
+    public ModelAndView searchLogById(HttpServletRequest request, HttpServletRequest response,
                                       @RequestParam("id") int id){
         ModelAndView modelAndView = new ModelAndView();
         com.llc.model.Log log = logService.getLog(id);
         modelAndView.addObject("log", log);
         modelAndView.setViewName("showLog");
-        return "showLog";
+        return modelAndView;
     }
 
 
