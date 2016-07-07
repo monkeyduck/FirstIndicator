@@ -1,19 +1,25 @@
 package com.llc.controller;
 
+import com.caikang.com.pitch.MainLabel;
 import com.llc.service.LogService;
 import com.llc.utils.DownloadFileUtil;
+import com.llc.utils.Utils;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.List;
 
 /**
@@ -71,5 +77,20 @@ public class LogController {
         modelAndView.setViewName("analyseLog");
         return modelAndView;
     }
+
+    @RequestMapping(value="/upload", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+    public ModelAndView checkAndAnalyse(@RequestParam("file")MultipartFile multipartFile) throws
+            IOException, InterruptedException {
+        File file = Utils.convert(multipartFile);
+        Utils.writeToTxt(file);
+        MainLabel mainLabel = new MainLabel();
+        mainLabel.downloadAllAudioWav(file);
+        mainLabel.createAudioLabel();
+        mainLabel.runPython();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("analyseLog");
+        return modelAndView;
+    }
+
 
 }

@@ -49,22 +49,72 @@
 <div class="container">
     <div class="row">
         <div class="span4">
-            <input id="lefile" type="file" style="display:none">
-            <div class="input-append">
-                <label class="control-label">Select File</label>
-                <input id="input-1" type="file" class="file">
-                <%--<input id="file_upload" class="input-large" type="text" style="height:30px;">--%>
-                <%--<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>--%>
-            </div>
+            <form>
+                <input id="lefile" type="file" style="display:none">
+                <div class="input-append">
+                    <label class="control-label">Select File</label>
+                    <input id="input-1" type="file" class="file">
+                    <%--<input id="file_upload" class="input-large" type="text" style="height:30px;">--%>
+                    <%--<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>--%>
+                </div>
+                <button class="btn btn-success" id="btn_upload" onclick="analyse()">分析</button>
+            </form>
         </div>
-
     </div>
 </div>
+
+<div id="zhongxin" style="width: 1000px;margin-top: 20%;margin-left: auto;margin-right: auto"
+     class="panel panel-default"></div>
+
+<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img
+        src="static/images/jiazai.gif"/><br/><h4 class="lighter block green">提交中...</h4></div>
+
 
 <script type="text/javascript">
     $('input[id=lefile]').change(function() {
         $('#input-1').val($(this).val());
     });
+
+    function loading(isloading) {
+        if (isloading) {
+            $("#zhongxin").hide();
+            $("#zhongxin2").show();
+        } else {
+            $("#zhongxin").show();
+            $("#zhongxin2").hide();
+        }
+    }
+
+    function analyse() {
+        loading(true)
+        var formData = new FormData($('form#uploadform')[0]);
+//        $.ajax({
+//            url: '/log/check',
+//            type: 'POST',
+//            data: formData,
+//            success: function (data) {
+//                loading(false)
+//                alert(data);
+//            },
+//            cache: false,
+//            contentType: false,
+//            processData: false
+//        })
+    }
+    $('form#uploadform').submit(function () {
+        var formData = new FormData($(this)[0]);
+        $.ajax({
+            url: '/resourceonline/upload.do',
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                loading(false)
+            },
+            cache:false,
+            contentType:false,
+            processData:false})
+        return false})
+
 </script>
 </body>
 </html>
