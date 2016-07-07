@@ -1,6 +1,8 @@
 package com.llc.controller;
 
 import com.llc.service.LogService;
+import com.llc.utils.DownloadFileUtil;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -25,6 +28,11 @@ public class LogController {
     @Resource(name="LogService")
     private LogService logService;
 
+    @RequestMapping("/index")
+    public String index(){
+        return "index";
+    }
+
     @RequestMapping("/queryLogs")
     public ModelAndView queryLog(HttpServletRequest request, HttpServletResponse response,
                                  @RequestParam("member_id") String member_id, @RequestParam("time") String time)
@@ -37,7 +45,7 @@ public class LogController {
     }
 
     @RequestMapping("/showLog")
-    public ModelAndView searchLogById(HttpServletRequest request, HttpServletRequest response,
+    public ModelAndView searchLogById(HttpServletRequest request, HttpServletResponse response,
                                       @RequestParam("id") int id){
         ModelAndView modelAndView = new ModelAndView();
         com.llc.model.Log log = logService.getLog(id);
@@ -46,5 +54,22 @@ public class LogController {
         return modelAndView;
     }
 
+    @RequestMapping("/downloadAbnormal")
+    public ModelAndView downloadAbnormalLog(HttpServletRequest request, HttpServletResponse response,
+                                    @RequestParam("moduleName") String moduleName) throws IOException{
+        ModelAndView modelAndView = new ModelAndView();
+        String basePath = "/home/llc/abnormalLog/";
+        String targetName = "abnormal_" + moduleName + ".log";
+        DownloadFileUtil.pushFile(targetName, basePath + targetName, response);
+        modelAndView.setViewName("downloadAbnormalLog");
+        return modelAndView;
+    }
+
+    @RequestMapping("/analyseLog")
+    public ModelAndView analyseLog(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("analyseLog");
+        return modelAndView;
+    }
 
 }
