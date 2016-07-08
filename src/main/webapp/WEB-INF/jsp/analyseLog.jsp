@@ -49,28 +49,57 @@
 <div class="container">
     <div class="row">
         <div class="span4">
-            <form>
-                <input id="lefile" type="file" style="display:none">
-                <div class="input-append">
-                    <label class="control-label">Select File</label>
-                    <input id="input-1" type="file" class="file">
-                    <%--<input id="file_upload" class="input-large" type="text" style="height:30px;">--%>
-                    <%--<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>--%>
-                </div>
-                <button class="btn btn-success" id="btn_upload" onclick="analyse()">分析</button>
+            <form method="POST" enctype="multipart/form-data" action="<%=basePath%>log/upload">
+                <table class="table">
+                    <tr>
+                        <td>file:</td>
+                        <td><input type="file" name="file" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" class="btn-success" value="Upload" /></td>
+                    </tr>
+                </table>
             </form>
+            <%--<form>--%>
+                <%--<input id="lefile" type="file" style="display:none">--%>
+                <%--<div class="input-append">--%>
+                    <%--<label class="control-label">Select File</label>--%>
+                    <%--<input id="input-1" type="file" class="file">--%>
+                    <%--&lt;%&ndash;<input id="file_upload" class="input-large" type="text" style="height:30px;">&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>&ndash;%&gt;--%>
+                <%--</div>--%>
+                <%--<button class="btn btn-success" id="btn_upload" onclick="analyse()">分析</button>--%>
+            <%--</form>--%>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <h2>result</h2>
+    <textarea class="text-left" rows="20" cols="60" th:text="${message}">
+            ${message}
+    </textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <button class="btn-success" id="btn_download" onclick="download_result()">下载结果</button>
         </div>
     </div>
 </div>
 
-<div id="zhongxin" style="width: 1000px;margin-top: 20%;margin-left: auto;margin-right: auto"
-     class="panel panel-default"></div>
+<%--<div id="zhongxin" style="width: 1000px;margin-top: 20%;margin-left: auto;margin-right: auto"--%>
+     <%--class="panel panel-default"></div>--%>
 
-<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img
-        src="static/images/jiazai.gif"/><br/><h4 class="lighter block green">提交中...</h4></div>
+<%--<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img--%>
+        <%--src="static/images/jiazai.gif"/><br/><h4 class="lighter block green">提交中...</h4></div>--%>
+
 
 
 <script type="text/javascript">
+    function download_result() {
+        window.location.href = '<%=basePath%>log/download_result';
+    }
     $('input[id=lefile]').change(function() {
         $('#input-1').val($(this).val());
     });
@@ -104,7 +133,7 @@
     $('form#uploadform').submit(function () {
         var formData = new FormData($(this)[0]);
         $.ajax({
-            url: '/resourceonline/upload.do',
+            url: '<%=basePath%>log/upload.do',
             type: 'POST',
             data: formData,
             success: function (data) {
@@ -114,6 +143,7 @@
             contentType:false,
             processData:false})
         return false})
+
 
 </script>
 </body>

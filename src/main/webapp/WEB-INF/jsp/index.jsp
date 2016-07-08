@@ -61,7 +61,7 @@
     <div class="row">
         <div class="span4">
             <h2>Analyse Log</h2>
-            <p><a class="btn btn-success btn-large" href="/log/analyseLog">Enter</a></p>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/analyseLog">Enter</a></p>
         </div>
         <div class="span4">
             <h2>Search Log</h2>

@@ -37,7 +37,7 @@ public class Utils {
     }
 
     public static void writeToTxt(File file) throws IOException{
-        File wfile = new File("labeled.txt");
+        File wfile = new File("/home/llc/LogAnalysis/py/labeled.txt");
         wfile.createNewFile();
         FileWriter fileWriter = new FileWriter(wfile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -45,7 +45,8 @@ public class Utils {
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line="";
         while ((line=bufferedReader.readLine())!=null){
-            bufferedWriter.write(line);
+            logger.info("read one sentence: "+line);
+            bufferedWriter.write(line+"\n");
         }
         bufferedReader.close();
         bufferedWriter.close();

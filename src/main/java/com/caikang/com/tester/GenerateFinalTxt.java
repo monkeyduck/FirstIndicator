@@ -1,7 +1,7 @@
 package com.caikang.com.tester;
 
-import com.pitch.PitchEstimation;
-import com.rule.GetLoudnessSeq;
+import com.caikang.com.pitch.PitchEstimation;
+import com.caikang.com.rule.GetLoudnessSeq;
 
 import java.io.File;
 import java.io.FileInputStream;

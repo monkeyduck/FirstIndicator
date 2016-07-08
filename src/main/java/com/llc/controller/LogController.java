@@ -4,7 +4,6 @@ import com.caikang.com.pitch.MainLabel;
 import com.llc.service.LogService;
 import com.llc.utils.DownloadFileUtil;
 import com.llc.utils.Utils;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.springframework.stereotype.Controller;
@@ -17,9 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InterruptedIOException;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -60,6 +57,16 @@ public class LogController {
         return modelAndView;
     }
 
+    @RequestMapping("/download_result")
+    public ModelAndView downloadResult(HttpServletResponse response) throws IOException{
+        String basePath = "/home/llc/LogAnalysis/py/";
+        String targetName = "svm_test.predict";
+        DownloadFileUtil.pushFile(targetName, basePath + targetName, response);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("analyseLog");
+        return modelAndView;
+    }
+
     @RequestMapping("/downloadAbnormal")
     public ModelAndView downloadAbnormalLog(HttpServletRequest request, HttpServletResponse response,
                                     @RequestParam("moduleName") String moduleName) throws IOException{
@@ -87,8 +94,26 @@ public class LogController {
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
         mainLabel.runPython();
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("analyseLog");
+//        File result = new File("/Users/linchuan/IdeaProjects/LogWebService/py/svm_test.predict");
+        File result = new File("/home/llc/LogAnalysis/py/svm_test.predict");
+        while (!result.exists()){
+            try{
+                Thread.currentThread().sleep(1000);
+            }catch(InterruptedException ie){
+                ie.printStackTrace();
+            }
+        }
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(result));
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String line="";
+        String re="";
+        while ((line = bufferedReader.readLine())!=null){
+            re += line+"\n";
+        }
+        modelAndView.addObject("message", re);
         return modelAndView;
     }
 

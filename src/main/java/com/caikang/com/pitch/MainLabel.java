@@ -1,5 +1,6 @@
 package com.caikang.com.pitch;
 
+import com.aliyun.oss.OSSClient;
 import com.caikang.com.rule.GetLoudnessSeq;
 import com.caikang.com.utils.OSSHelper;
 import org.slf4j.Logger;
@@ -12,8 +13,16 @@ import java.util.Arrays;
 public class MainLabel {
 	private ArrayList<String> lines;
 	private ArrayList<String> audioList;
-    private OSSHelper ossHelper = new OSSHelper();
+    private ArrayList<String> audioKeyList;
+    private OSSHelper ossHelper;
     private static final Logger logger = LoggerFactory.getLogger(MainLabel.class);
+
+    public MainLabel(){
+        lines = new ArrayList<String>();
+        audioList = new ArrayList<String>();
+        ossHelper = new OSSHelper();
+        audioKeyList = new ArrayList<String>();
+    }
 
 	public static int getLabel(String filename){
 		FileInputStream fis;
@@ -38,14 +47,18 @@ public class MainLabel {
 //	public static void main(String args[]) throws IOException {
 //		createAudioLabel();
 //    }
-    public boolean downloadOneAudioWav(String memberId, String recordId){
+    public boolean downloadAudioWavBatch(){
         try{
-            ossHelper.download(memberId, recordId);
+            for (String audioKey:audioKeyList){
+                // It should be asynchronous
+                ossHelper.download(audioKey);
+            }
+            ossHelper.getOssClient().shutdown();
 
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage());
-            return false;
+            return true;
         }
         return true;
     }
@@ -59,29 +72,43 @@ public class MainLabel {
 			lines.add(line);
 			String segs[] = line.split("\t");
 			String mem_id = segs[0];
-			String record_id = segs[4].split("/")[segs[4].split("/").length-1];
-			String audioPath = "audio/"+mem_id+"/"+record_id;
-            downloadOneAudioWav(mem_id, record_id);
+			String record_id = segs[3].split("/")[segs[3].split("/").length-1];
+			String audioPath = "/home/llc/LogAnalysis/audio/"+mem_id+"-"+record_id;
+            audioKeyList.add(mem_id+"-"+record_id);
+//            downloadOneAudioWav(mem_id, record_id);
 			audioList.add(audioPath);
 		}
+        while(!downloadAudioWavBatch());
 	}
 
 	public ArrayList<Integer> createAudioLabel() throws IOException{
         ArrayList<Integer> labelList = new ArrayList<Integer>();
-        File file = new File("annotation.txt");
+        File file = new File("/home/llc/LogAnalysis/py/annotation.txt");
+        file.createNewFile();
         FileWriter fileWriter = new FileWriter(file);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (String audioRecord: audioList){
             int label = getLabel(audioRecord);
             labelList.add(label);
             bufferedWriter.write(""+label+"\n");
-            System.out.println(label);
         }
+        bufferedWriter.close();
+        fileWriter.close();
 		return labelList;
 	}
 
     public void runPython() throws IOException, InterruptedException {
-        Process proc = Runtime.getRuntime().exec("python Combine.py");
+        Process proc = Runtime.getRuntime().exec("sh /home/llc/LogAnalysis/runPython.sh");
         proc.waitFor();
+        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+        StringBuffer sb = new StringBuffer();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        String result = sb.toString();
+        System.out.println(result);
+
     }
+
 }

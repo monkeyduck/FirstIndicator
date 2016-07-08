@@ -1,7 +1,7 @@
 package com.caikang.com.statistic;
 
-import com.statistic.mfcc.FeatureExtract;
-import com.statistic.mfcc.PreProcess;
+import com.caikang.com.statistic.mfcc.FeatureExtract;
+import com.caikang.com.statistic.mfcc.PreProcess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
