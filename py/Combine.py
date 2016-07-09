@@ -118,16 +118,15 @@ def sentence_repeat(content):
     return '0'
 
 
-
-
 def context_repeat(sentence, keyword_map):
     member_id = sentence.split('\t')[0]
     time = sentence.split('\t')[1]
     content = sentence.split('\t')[5]
-    if time in keyword_map[member_id].keys():
-        for keyword in keyword_map[member_id][time]:
-            if keyword in content:
-                return '1'
+    if member_id in keyword_map.keys():
+        if time in keyword_map[member_id].keys():
+            for keyword in keyword_map[member_id][time]:
+                if keyword in content:
+                    return '1'
     return '0'
 
 
