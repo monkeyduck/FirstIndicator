@@ -76,7 +76,7 @@
     <div class="row">
         <div class="span2">
             <h2>result</h2>
-    <textarea class="text-left" rows="20" cols="60" th:text="${message}">
+    <textarea class="text-left" rows="15" cols="60" th:text="${message}">
             ${message}
     </textarea>
         </div>

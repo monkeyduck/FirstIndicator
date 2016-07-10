@@ -27,13 +27,13 @@ def preprocess_tfidf(file):
                 content = line.split('\t')[5].strip()
             else:
                 content = ' '
-            if len(content) > 3:
+            if len(content) >= 3:
                 wf.write(line)
     wf.close()
 
 
-def tf_idf():
-    preprocess_tfidf('labeled.txt')
+def tf_idf(label_file):
+    preprocess_tfidf(label_file)
     window_size = 30
     step_size = 15
     threshold = 0.45
@@ -130,9 +130,9 @@ def context_repeat(sentence, keyword_map):
     return '0'
 
 
-def sensitive_words(neg_dic, sentences):
+def neg_word_counts(neg_dic, sentences):
     cnt = 0
-    maxCnt = 2
+    max_cnt = 3
     for sen in sentences:
         sen = sen.split('\t')[5]
         for neg_word in neg_dic:
@@ -144,13 +144,30 @@ def sensitive_words(neg_dic, sentences):
         # for seg in jieba.cut(sen.split('\t')[6]):
         #     if seg in neg_dic:
         #         cnt += 1
-    if cnt >= maxCnt:
+    if cnt >= max_cnt:
         return '1'
     else:
         return '0'
 
 
-def has_neg_word_sentence(neg_dic, sentence):
+def context_repeat_counts(sentences, keyword_map):
+    cnt = 0
+    max_cnt = 3
+    for sentence in sentences:
+        member_id = sentence.split('\t')[0]
+        time = sentence.split('\t')[1]
+        content = sentence.split('\t')[5]
+        if time in keyword_map[member_id].keys():
+            for keyword in keyword_map[member_id][time]:
+                if keyword in content:
+                    cnt += 1
+    if cnt >= max_cnt:
+        return '1'
+    else:
+        return '0'
+
+
+def has_neg_word(neg_dic, sentence):
     features = ''
     sentence = sentence.split('\t')[5]
     for neg_word in neg_dic:
@@ -328,8 +345,9 @@ def write_svm(svm_list):
     #with codecs.open('svm_test', 'w', 'utf-8') as f:
     #    f.writelines(test_list)
 
+
 def extract_features(label_file):
-    keyword_map = tf_idf()
+    keyword_map = tf_idf(label_file)
     neg_dic = load_neg_dic()
     f = codecs.open(label_file, 'r', 'utf-8')
     fl = f.readlines()
@@ -345,11 +363,13 @@ def extract_features(label_file):
     for i in range(len(fl)):
         start = i - related_numbers if i>=related_numbers else 0
         end = i + related_numbers+1 if i+related_numbers < len(fl) else len(fl)
-        feature = str(i + 1) + ','
+        feature = ''
+        feature += caikang[i] + ','
         feature += sentence_repeat(fl[i].split('\t')[5]) + ','
         feature += context_repeat(fl[i], keyword_map) + ','
-        feature += sensitive_words(neg_dic, fl[start:end]) + ','
-        feature += has_neg_word_sentence(neg_dic, fl[i]) + ','
+        feature += context_repeat_counts(fl[start:end], keyword_map) + ','
+        feature += has_neg_word(neg_dic, fl[i]) + ','
+        feature += neg_word_counts(neg_dic, fl[start:end]) + ','
         feature += get_content_length(fl[i]) + ','
         # feature += xiaole_word(fl[start:end])+','
         # try:
@@ -358,7 +378,6 @@ def extract_features(label_file):
         #     data.append(map(lambda x: num(x.strip()), audio.split(',')))
         # except ValueError:
         #     print ValueError.message
-        feature += caikang[i] + ','
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
         # label = '1' if fl[i].split('\t')[8] == '1' or fl[i].split('\t')[10] == '1' else '0'
@@ -417,11 +436,36 @@ def runSVM():
     os.popen('/home/libsvm-3.21/svm-predict svm_test svm_total.model svm_test.predict')
 
 
+def my_test():
+    wf = codecs.open('svm_test.predict', 'w', 'utf-8')
+    max_cnt = 2
+    with codecs.open('svm_test', 'r', 'utf-8') as f:
+        fl = f.readlines()
+        for line in fl:
+            cnt = 0
+            feas = line.strip().split(' ')[1:]
+            length = line.strip().split(' ')[len(line.strip().split(' '))-1].split(':')[1]
+            cai_audio = feas[0].split(':')[1]
+            if length <= 2 and cai_audio=='1':
+                wf.write('1\n')
+                continue
+            for feature in feas:
+                if feature.split(':')[1]=='1':
+                    cnt += 1
+                    if cnt == max_cnt:
+                        wf.write('1\n')
+                        break
+            if cnt != max_cnt:
+                wf.write('0\n')
+    wf.close()
+
+
 if __name__ == '__main__':
     labelf = 'labeled.txt'
     extract_features(labelf)
-    runSVM()
-    classifyByModule(labelf)
+    my_test()
+    # runSVM()
+    # classifyByModule(labelf)
     # calculate_confusion('svm_test', 'svm_test.predict')
 
 

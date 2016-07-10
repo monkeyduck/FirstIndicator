@@ -4,8 +4,8 @@ import com.caikang.com.pitch.MainLabel;
 import com.llc.service.LogService;
 import com.llc.utils.DownloadFileUtil;
 import com.llc.utils.Utils;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping("/log")
 public class LogController {
 
-    private static final Log logger = LogFactory.getLog(LogController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
 
     @Resource(name="LogService")
     private LogService logService;
@@ -99,12 +99,21 @@ public class LogController {
         modelAndView.setViewName("analyseLog");
 //        File result = new File("/Users/linchuan/IdeaProjects/LogWebService/py/svm_test.predict");
         File result = new File("/home/llc/LogAnalysis/py/svm_test.predict");
+        int count = 0;
         while (!result.exists()){
-            try{
-                Thread.currentThread().sleep(1000);
-            }catch(InterruptedException ie){
-                ie.printStackTrace();
+            if (count == 50){
+                logger.error("svm_test.predict not found! Exit :1");
+                break;
             }
+            logger.info("Waiting test.predict");
+            try {
+                // thread to sleep for 1000 milliseconds
+                Thread.sleep(100);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            count += 1;
+
         }
         InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(result));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
