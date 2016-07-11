@@ -97,16 +97,23 @@ public class MainLabel {
 	}
 
     public void runPython() throws IOException, InterruptedException {
-        Process proc = Runtime.getRuntime().exec("sh /home/llc/LogAnalysis/runPython.sh");
-        proc.waitFor();
-        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-        StringBuffer sb = new StringBuffer();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
+        try{
+            logger.info("Start to run python script...");
+            Process proc = Runtime.getRuntime().exec("sh /home/llc/LogAnalysis/runPython.sh");
+            proc.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            String result = sb.toString();
+            System.out.println(result);
+            logger.info("Python run status: "+result);
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
-        String result = sb.toString();
-        System.out.println(result);
+
 
     }
 
