@@ -3,6 +3,7 @@ package com.llc.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -25,16 +26,35 @@ public class Utils {
     public static final String logstore = "logstore"; // 上面步骤创建的日志库名称
 
     public static File convert(MultipartFile file) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
-        boolean b = convFile.createNewFile();
-        if (!b) {
-            logger.info(file.getOriginalFilename() + " can't trans form to file");
-        }
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        logger.info("Read contents: " + file.getBytes());
-        fos.close();
-        return convFile;
+
+        String name = file.getOriginalFilename();
+        BufferedOutputStream stream = new BufferedOutputStream(
+                new FileOutputStream(new File(name)));
+        FileCopyUtils.copy(file.getInputStream(), stream);
+        stream.close();
+
+        File inputFile = new File(name);
+        return inputFile;
+//        BufferedReader reader = null;
+//
+//        String output = "";
+//        try {
+//            reader = new BufferedReader(new FileReader(inputFile));
+//            String line = "";
+//            while ((line = reader.readLine()) != null) {
+//
+//            }
+
+//        File convFile = new File(file.getOriginalFilename());
+//        boolean b = convFile.createNewFile();
+//        if (!b) {
+//            logger.info(file.getOriginalFilename() + " can't trans form to file");
+//        }
+//        FileOutputStream fos = new FileOutputStream(convFile);
+//        fos.write(file.getBytes());
+//        logger.info("Read contents: " + file.getBytes());
+//        fos.close();
+//        return convFile;
     }
 
     public static void writeToTxt(File file) throws IOException{
