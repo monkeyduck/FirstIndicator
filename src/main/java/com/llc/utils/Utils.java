@@ -32,6 +32,7 @@ public class Utils {
         }
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
+        logger.info("Read contents: " + file.getBytes());
         fos.close();
         return convFile;
     }
@@ -41,7 +42,7 @@ public class Utils {
         wfile.createNewFile();
         FileWriter fileWriter = new FileWriter(wfile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file));
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line="";
         while ((line=bufferedReader.readLine())!=null){
