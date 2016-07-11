@@ -83,7 +83,7 @@
     </div>
     <div class="row">
         <div class="span2">
-            <button class="btn-success" id="btn_download" onclick="download_result()">下载结果</button>
+            <button class="btn-success" id="btn_download" onclick="download_result(${fileName})">下载结果</button>
         </div>
     </div>
 </div>
@@ -97,8 +97,9 @@
 
 
 <script type="text/javascript">
-    function download_result() {
-        window.location.href = '<%=basePath%>log/download_result';
+    function download_result(suffix) {
+
+        window.location.href = '<%=basePath%>log/download_result?fileName='+suffix;
     }
     $('input[id=lefile]').change(function() {
         $('#input-1').val($(this).val());

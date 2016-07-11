@@ -59,9 +59,9 @@ public class LogController {
     }
 
     @RequestMapping("/download_result")
-    public ModelAndView downloadResult(HttpServletResponse response) throws IOException{
+    public ModelAndView downloadResult(HttpServletResponse response, @RequestParam("fileName") String suffix) throws IOException{
         String basePath = "/home/llc/LogAnalysis/py/";
-        String targetName = "svm_test.predict";
+        String targetName = "svm_test_"+suffix+".predict";
         DownloadFileUtil.pushFile(targetName, basePath + targetName, response);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("analyseLog");
@@ -126,6 +126,7 @@ public class LogController {
         while ((line = bufferedReader.readLine())!=null){
             re += line+"\n";
         }
+        modelAndView.addObject("fileName", dateSuffix);
         modelAndView.addObject("message", re);
         return modelAndView;
     }
