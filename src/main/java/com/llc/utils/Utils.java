@@ -29,7 +29,7 @@ public class Utils {
 
         String name = file.getOriginalFilename();
         File readFile = new File(name);
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile));
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile), "ISO-8859-1");
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line = bufferedReader.readLine();
         logger.info("Original sentence: "+line);
@@ -69,7 +69,7 @@ public class Utils {
         wfile.createNewFile();
         FileWriter fileWriter = new FileWriter(wfile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "gb18030");
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line="";
         while ((line=bufferedReader.readLine())!=null){
