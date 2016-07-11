@@ -8,6 +8,7 @@ import os
 import codecs
 import random
 import re
+import sys
 
 
 def load_neg_dic():
@@ -437,8 +438,8 @@ def runSVM():
     os.popen('/home/libsvm-3.21/svm-predict svm_test svm_total.model svm_test.predict')
 
 
-def my_test():
-    wf = codecs.open('svm_test.predict', 'w', 'utf-8')
+def my_test(suffix):
+    wf = codecs.open('svm_test_'+suffix+'.predict', 'w', 'utf-8')
     max_cnt = 2
     with codecs.open('svm_test', 'r', 'utf-8') as f:
         fl = f.readlines()
@@ -462,13 +463,14 @@ def my_test():
 
 
 if __name__ == '__main__':
+    suffix = sys.argv[1]
     labelf = 'labeled.txt'
     extract_features(labelf)
-    my_test()
+    my_test(suffix)
     # runSVM()
     # classifyByModule(labelf)
     # calculate_confusion('svm_test', 'annotation.txt')
-    calculate_confusion('svm_test', 'svm_test.predict')
+    calculate_confusion('svm_test', 'svm_test_'+suffix+'.predict')
 
 
 
