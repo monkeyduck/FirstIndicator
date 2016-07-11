@@ -21,7 +21,7 @@ public class OSSHelper {
     private static String bucketName;
 
     static{
-        endpoint = "oss-cn-beijing.aliyuncs.com";
+        endpoint = "oss-cn-beijing-internal.aliyuncs.com";
         accessKeyId = "Kywj58hCJKOSQTSk";
         accessKeySecret = "tnQmCz77jZdxr5OBBqKb4lWx4fRziC";
         bucketName = "record-resource";
@@ -32,18 +32,26 @@ public class OSSHelper {
         return ossClient;
     }
 
-    public void download(String key) throws IOException {
+    public void download(String fname) throws IOException {
         // 创建OSSClient实例
-        String filename = "audio/"+key;
+        String[] segs = fname.split("@");
+        String filename = "audio/"+segs[0]+"-"+segs[1];
+        String key = segs[0]+"/"+segs[1];
+//        File wavfile = new File(filename);
         File wavfile = new File("/home/llc/LogAnalysis/"+filename);
         if (!wavfile.exists()){
-            wavfile.createNewFile();
+//            wavfile.createNewFile();
+//            ObjectListing objectListing = ossClient.listObjects(bucketName, key.split("-")[0]);
+//            List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+//            for (OSSObjectSummary s : sums) {
+//                System.out.println("\t" + s.getKey());
+//            }
             //prefix
             logger.info("Start to download wav: "+key);
             ossClient.getObject(new GetObjectRequest(bucketName, key), wavfile);
             logger.info("Finished downloading wav: "+key);
         }
-        logger.info(key+"has existed.");
+        logger.info(key+" has existed.");
 
     }
 
