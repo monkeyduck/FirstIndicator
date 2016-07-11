@@ -47,9 +47,13 @@ public class OSSHelper {
 //                System.out.println("\t" + s.getKey());
 //            }
             //prefix
-            logger.info("Start to download wav: "+key);
-            ossClient.getObject(new GetObjectRequest(bucketName, key), wavfile);
-            logger.info("Finished downloading wav: "+key);
+            try{
+                logger.info("Start to download wav: "+key);
+                ossClient.getObject(new GetObjectRequest(bucketName, key), wavfile);
+                logger.info("Finished downloading wav: "+key);
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
         }
         logger.info(key+" has existed.");
 
