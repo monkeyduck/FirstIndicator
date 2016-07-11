@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.joda.time.DateTime;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -90,15 +91,18 @@ public class LogController {
             IOException, InterruptedException {
         File file = Utils.convert(multipartFile);
         Utils.writeToTxt(file);
+
+        DateTime datetime = new DateTime();
+        String dateSuffix = datetime.toString("yyyyMMdd");
+
         MainLabel mainLabel = new MainLabel();
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
-        mainLabel.runPython();
-
+        mainLabel.runPython(dateSuffix);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("analyseLog");
 //        File result = new File("/Users/linchuan/IdeaProjects/LogWebService/py/svm_test.predict");
-        File result = new File("/home/llc/LogAnalysis/py/svm_test.predict");
+        File result = new File("/home/llc/LogAnalysis/py/svm_test_"+dateSuffix+".predict");
         int count = 0;
         while (!result.exists()){
             if (count == 50){

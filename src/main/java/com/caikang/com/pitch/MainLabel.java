@@ -96,10 +96,10 @@ public class MainLabel {
 		return labelList;
 	}
 
-    public void runPython() throws IOException, InterruptedException {
+    public void runPython(String suffix) throws IOException, InterruptedException {
         try{
             logger.info("Start to run python script...");
-            Process proc = Runtime.getRuntime().exec("sh /home/llc/LogAnalysis/runPython.sh");
+            Process proc = Runtime.getRuntime().exec("sh /home/llc/LogAnalysis/runPython.sh "+suffix);
             proc.waitFor();
             BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
             StringBuffer sb = new StringBuffer();
