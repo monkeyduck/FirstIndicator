@@ -11,6 +11,8 @@ import java.io.IOException;
 public class Test {
     public static void main(String args[]) throws IOException, InterruptedException{
         MainLabel mainLabel = new MainLabel();
+        File file = new File("py/labeled.txt");
+        mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
         mainLabel.runPython();
     }

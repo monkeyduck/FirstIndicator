@@ -43,6 +43,7 @@ public class OSSHelper {
             ossClient.getObject(new GetObjectRequest(bucketName, key), wavfile);
             logger.info("Finished downloading wav: "+key);
         }
+        logger.info(key+"has existed.");
 
     }
 

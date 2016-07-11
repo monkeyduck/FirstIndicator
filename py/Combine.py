@@ -157,10 +157,11 @@ def context_repeat_counts(sentences, keyword_map):
         member_id = sentence.split('\t')[0]
         time = sentence.split('\t')[1]
         content = sentence.split('\t')[5]
-        if time in keyword_map[member_id].keys():
-            for keyword in keyword_map[member_id][time]:
-                if keyword in content:
-                    cnt += 1
+        if member_id in keyword_map.keys():
+            if time in keyword_map[member_id].keys():
+                for keyword in keyword_map[member_id][time]:
+                    if keyword in content:
+                        cnt += 1
     if cnt >= max_cnt:
         return '1'
     else:
@@ -380,8 +381,8 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        # label = '1' if fl[i].split('\t')[8] == '1' or fl[i].split('\t')[10] == '1' else '0'
-        label = '0'
+        label = '1' if fl[i].split('\t')[9] == '1' else '0'
+        # label = '0'
         labels.append(label)
         feature += label
         weka_list.append(feature + '\n')
@@ -463,10 +464,10 @@ def my_test():
 if __name__ == '__main__':
     labelf = 'labeled.txt'
     extract_features(labelf)
-    my_test()
+    # my_test()
     # runSVM()
     # classifyByModule(labelf)
-    # calculate_confusion('svm_test', 'svm_test.predict')
+    calculate_confusion('svm_test', 'annotation.txt')
 
 
 

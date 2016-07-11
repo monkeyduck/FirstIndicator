@@ -75,7 +75,6 @@ public class MainLabel {
 			String record_id = segs[3].split("/")[segs[3].split("/").length-1];
 			String audioPath = "/home/llc/LogAnalysis/audio/"+mem_id+"-"+record_id;
             audioKeyList.add(mem_id+"-"+record_id);
-//            downloadOneAudioWav(mem_id, record_id);
 			audioList.add(audioPath);
 		}
         while(!downloadAudioWavBatch());
