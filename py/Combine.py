@@ -23,11 +23,11 @@ def preprocess_tfidf(file):
     with codecs.open(file, 'r', 'utf-8') as f:
         fl = f.readlines()
         for line in fl:
-            if len(line.split('\t'))==6:
+            if len(line.split('\t')) >= 6:
                 content = line.split('\t')[5].strip()
             else:
                 content = ' '
-            if len(content) >= 3:
+            if len(content) >= 2:
                 wf.write(line)
     wf.close()
 
@@ -132,7 +132,7 @@ def context_repeat(sentence, keyword_map):
 
 def neg_word_counts(neg_dic, sentences):
     cnt = 0
-    max_cnt = 3
+    max_cnt = 2
     for sen in sentences:
         sen = sen.split('\t')[5]
         for neg_word in neg_dic:
@@ -152,7 +152,7 @@ def neg_word_counts(neg_dic, sentences):
 
 def context_repeat_counts(sentences, keyword_map):
     cnt = 0
-    max_cnt = 3
+    max_cnt = 2
     for sentence in sentences:
         member_id = sentence.split('\t')[0]
         time = sentence.split('\t')[1]
@@ -381,7 +381,7 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        label = '1' if fl[i].split('\t')[9] == '1' else '0'
+        label = '1' if fl[i].split('\t')[9] == '1' or fl[i].split('\t')[7]=='1' else '0'
         # label = '0'
         labels.append(label)
         feature += label
@@ -464,10 +464,11 @@ def my_test():
 if __name__ == '__main__':
     labelf = 'labeled.txt'
     extract_features(labelf)
-    # my_test()
+    my_test()
     # runSVM()
     # classifyByModule(labelf)
-    calculate_confusion('svm_test', 'annotation.txt')
+    # calculate_confusion('svm_test', 'annotation.txt')
+    calculate_confusion('svm_test', 'svm_test.predict')
 
 
 
