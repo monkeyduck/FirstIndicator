@@ -382,8 +382,8 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        label = '1' if fl[i].split('\t')[9] == '1' or fl[i].split('\t')[7]=='1' else '0'
-        # label = '0'
+        # label = '1' if fl[i].split('\t')[7] == '1' or fl[i].split('\t')[7]=='1' else '0'
+        label = '0'
         labels.append(label)
         feature += label
         weka_list.append(feature + '\n')
