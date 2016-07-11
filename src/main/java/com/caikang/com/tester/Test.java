@@ -14,6 +14,6 @@ public class Test {
         File file = new File("py/labeled.txt");
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
-        mainLabel.runPython();
+        mainLabel.runPython("aaa");
     }
 }
