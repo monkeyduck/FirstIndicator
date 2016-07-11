@@ -28,6 +28,13 @@ public class Utils {
     public static File convert(MultipartFile file) throws IOException {
 
         String name = file.getOriginalFilename();
+        File readFile = new File(name);
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile));
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String line = bufferedReader.readLine();
+        logger.info("Original sentence: "+line);
+        bufferedReader.close();
+        inputStreamReader.close();
         BufferedOutputStream stream = new BufferedOutputStream(
                 new FileOutputStream(new File(name)));
         FileCopyUtils.copy(file.getInputStream(), stream);
@@ -62,7 +69,7 @@ public class Utils {
         wfile.createNewFile();
         FileWriter fileWriter = new FileWriter(wfile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "gb18030");
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line="";
         while ((line=bufferedReader.readLine())!=null){

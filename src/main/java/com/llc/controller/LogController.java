@@ -93,7 +93,7 @@ public class LogController {
         Utils.writeToTxt(file);
 
         DateTime datetime = new DateTime();
-        String dateSuffix = datetime.toString("yyyyMMdd-hhmmss");
+        String dateSuffix = datetime.toString("yyyyMMddhhmmss");
 
         MainLabel mainLabel = new MainLabel();
         mainLabel.downloadAllAudioWav(file);
