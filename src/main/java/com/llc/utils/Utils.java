@@ -29,7 +29,7 @@ public class Utils {
 
         String name = file.getOriginalFilename();
         File readFile = new File(name);
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile), "ISO-8859-1");
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String line = bufferedReader.readLine();
         logger.info("Original sentence: "+line);
