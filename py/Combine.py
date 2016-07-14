@@ -35,9 +35,9 @@ def preprocess_tfidf(file):
 
 def tf_idf(label_file):
     preprocess_tfidf(label_file)
-    window_size = 30
-    step_size = 15
-    threshold = 0.45
+    window_size = 40
+    step_size = 20
+    threshold = 0.3
     key_map = {}
     dic = {}
     file = 'tf.idf'
@@ -73,9 +73,10 @@ def tf_idf(label_file):
     tfidf = transformer.fit_transform(vectorizer.fit_transform(corpus))
     word = vectorizer.get_feature_names()  # 获取词袋模型中的所有词语
     weight = tfidf.toarray()  # 将tf-idf矩阵抽取出来，元素a[i][j]表示j词在i类文本中的tf-idf权重
+    ignore_words = read_ignore()
     for i in range(len(weight)):  # 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
         for j in range(len(word)):
-            if float(weight[i][j]) > threshold:
+            if float(weight[i][j]) > threshold and word[j] not in ignore_words:
                 member_id = index[i].split(' ')[0]
                 if member_id not in key_map.keys():
                     key_map[member_id]={}
@@ -153,7 +154,7 @@ def neg_word_counts(neg_dic, sentences):
 
 def context_repeat_counts(sentences, keyword_map):
     cnt = 0
-    max_cnt = 2
+    max_cnt = 3
     for sentence in sentences:
         member_id = sentence.split('\t')[0]
         time = sentence.split('\t')[1]
@@ -232,24 +233,22 @@ def get_content_length(sentence):
 
 def xiaole_word(lines):
     sentences = map(lambda x: x.split('\t')[4], lines)
+    cur_sen = sentences[-1]
     repeat = '0'
-    for i in range(3):
-        if sentences[i] == sentences[3]:
+    for i in range(len(lines) - 1):
+        if sentences[i] == cur_sen:
             repeat = '1'
             break
-    shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊',u'倒着不舒服,我都看不到你的脸了',]
+    shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
     shake = '0'
     for s in shake_sentence:
-        if s in sentences[3]:
+        if s in sentences[-1]:
             shake = '1'
             break
-    wrong_tip = 0
-    for sen in sentences:
-        if 'wrong_tip' in sen:
-            wrong_tip += 1
-    return repeat+','+shake+','+str(wrong_tip)
-
-
+    wrong_tip = '0'
+    if 'wrong_tip' in cur_sen:
+        wrong_tip = '1'
+    return repeat + ',' + shake + ',' + wrong_tip
 
 
 def add_negative(feature):
@@ -348,6 +347,73 @@ def write_svm(svm_list):
     #    f.writelines(test_list)
 
 
+
+
+def classifyByModule(label_f, suffix):
+    rf = codecs.open(label_f, 'r', 'utf-8')
+    test_f = codecs.open('svm_test', 'r', 'utf-8')
+    testfl = test_f.readlines()
+    test_f.close()
+    rfl = rf.readlines()
+    rf.close()
+    log_dic={}
+    with codecs.open('predict_'+suffix+'.txt', 'r', 'utf-8') as f:
+        fl = f.readlines()
+        for i in range(len(fl)):
+            if fl[i].strip() == '1':
+                id = int(testfl[i].split(' ')[1].split(':')[1])
+                module = rfl[id-1].split('\t')[2]
+                if module not in log_dic.keys():
+                    log_dic[module] = []
+                log_dic[module].append(rfl[id-1])
+    for mod in log_dic.keys():
+        with codecs.open('abnormal_'+mod+'.log', 'w', 'utf-8') as f:
+            for line in log_dic[mod]:
+                f.write(line+'\n')
+
+
+
+def runSVM():
+    # os.popen('/Users/linchuan/Downloads/libsvm-3.21/svm-train svm_total')
+    os.popen('/home/libsvm-3.21/svm-predict svm_test svm_total.model svm_test.predict')
+
+
+def list_wrong_case(f1, f2):
+    fl = open('labeled.txt', 'r').readlines()
+    right_case=[]
+    false_false = []
+    false_true = []
+    right_fea = []
+    feature = []
+    false_feature = []
+    with codecs.open(f1, 'r', 'utf-8') as f1:
+        fl1 = f1.readlines()
+    with codecs.open(f2, 'r', 'utf-8') as f2:
+        fl2 = f2.readlines()
+    for i in range(1482):
+        if fl1[i].split(' ')[0]==fl2[i].strip()=='1':      # right case
+            # id = int(ids[i+int(1485-len(fl1))].strip())
+            right_fea.append(fl1[i])
+            right_case.append('\t'.join(fl[i].split('\t')[4:]))
+        elif fl1[i].split(' ')[0]=='1' and fl2[i].strip()=='0':     # false negative case
+            # id = int(ids[i+int(1485-len(fl1))].strip())
+            false_false.append('\t'.join(fl[i].split('\t')[4:]))
+            feature.append(fl1[i])
+        elif fl1[i].split(' ')[0]=='0' and fl2[i].strip()=='1':     # false positive case
+            # id = int(ids[i+int(1485-len(fl1))].strip())
+            false_true.append('\t'.join(fl[i].split('\t')[4:]))
+            false_feature.append(fl1[i])
+    print 'Right case:'
+    for i in range(len(right_case)):
+        print right_case[i], right_fea[i]
+    print 'False negative:'
+    for i in range(len(false_false)):
+        print false_false[i], feature[i]
+    print 'False positive:'
+    for i in range(len(false_true)):
+        print false_true[i], false_feature[i]
+
+
 def extract_features(label_file):
     keyword_map = tf_idf(label_file)
     neg_dic = load_neg_dic()
@@ -370,10 +436,10 @@ def extract_features(label_file):
         feature += sentence_repeat(fl[i].split('\t')[5]) + ','
         feature += context_repeat(fl[i], keyword_map) + ','
         feature += context_repeat_counts(fl[start:end], keyword_map) + ','
-        feature += has_neg_word(neg_dic, fl[i]) + ','
         feature += neg_word_counts(neg_dic, fl[start:end]) + ','
+        feature += xiaole_word(fl[start:i+1])+','
+        feature += has_neg_word(neg_dic, fl[i]) + ','
         feature += get_content_length(fl[i]) + ','
-        # feature += xiaole_word(fl[start:end])+','
         # try:
         #     audio = audio_context_features(fl[start:end])
         #     feature += audio+','
@@ -382,7 +448,7 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        # label = '1' if fl[i].split('\t')[7] == '1' or fl[i].split('\t')[7]=='1' else '0'
+        # label = '1' if fl[i].split('\t')[7] else '0'
         label = '0'
         labels.append(label)
         feature += label
@@ -409,48 +475,19 @@ def extract_features(label_file):
     write_svm(svm_list)
 
 
-def classifyByModule(label_f):
-    rf = codecs.open(label_f, 'r', 'utf-8')
-    test_f = codecs.open('svm_test', 'r', 'utf-8')
-    testfl = test_f.readlines()
-    test_f.close()
-    rfl = rf.readlines()
-    rf.close()
-    log_dic={}
-    with codecs.open('svm_test.predict', 'r', 'utf-8') as f:
-        fl = f.readlines()
-        for i in range(len(fl)):
-            if fl[i].strip() == '1':
-                id = int(testfl[i].split(' ')[1].split(':')[1])
-                module = rfl[id-1].split('\t')[2]
-                if module not in log_dic.keys():
-                    log_dic[module] = []
-                log_dic[module].append(rfl[id-1])
-    for mod in log_dic.keys():
-        with codecs.open('abnormal_'+mod+'.log', 'w', 'utf-8') as f:
-            for line in log_dic[mod]:
-                f.write(line+'\n')
-
-
-
-def runSVM():
-    # os.popen('/Users/linchuan/Downloads/libsvm-3.21/svm-train svm_total')
-    os.popen('/home/libsvm-3.21/svm-predict svm_test svm_total.model svm_test.predict')
-
-
 def my_test(suffix):
-    wf = codecs.open('svm_test_'+suffix+'.predict', 'w', 'utf-8')
+    wf = codecs.open('predict_'+suffix+'.txt', 'w', 'utf-8')
     max_cnt = 2
     with codecs.open('svm_test', 'r', 'utf-8') as f:
         fl = f.readlines()
         for line in fl:
             cnt = 0
-            feas = line.strip().split(' ')[1:]
-            length = line.strip().split(' ')[len(line.strip().split(' '))-1].split(':')[1]
+            feas = line.strip().split(' ')[1:-1]
+            length = int(line.strip().split(' ')[len(line.strip().split(' '))-1].split(':')[1])
             cai_audio = feas[0].split(':')[1]
-            if length <= 2 and cai_audio=='1':
-                wf.write('1\n')
-                continue
+            # if length <= 2 and cai_audio=='1':
+            #     wf.write('1\n')
+            #     continue
             for feature in feas:
                 if feature.split(':')[1]=='1':
                     cnt += 1
@@ -468,9 +505,10 @@ if __name__ == '__main__':
     extract_features(labelf)
     my_test(suffix)
     # runSVM()
-    # classifyByModule(labelf)
+    # classifyByModule(labelf, suffix)
     # calculate_confusion('svm_test', 'annotation.txt')
-    calculate_confusion('svm_test', 'svm_test_'+suffix+'.predict')
+    # list_wrong_case('svm_test', 'predict_'+suffix+'.txt')
+    calculate_confusion('svm_test', 'predict_'+suffix+'.txt')
 
 
 

@@ -1,2 +1,2 @@
-cd /home/llc/LogAnalysis/py
-python Combine.py
+cd /Users/linchuan/IdeaProjects/LogWebService/py
+python Combine.py $1
