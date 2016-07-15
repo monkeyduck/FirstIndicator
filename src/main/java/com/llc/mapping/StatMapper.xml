@@ -8,6 +8,7 @@
     <result column="newUserNum" property="newUserNum" jdbcType="INTEGER" />
     <result column="bugNum" property="bugNum" jdbcType="INTEGER" />
     <result column="avgUsedTime" property="avgUsedTime" jdbcType="FLOAT" />
+    <result column="displaytime" property="displaytime" jdbcType="VARCHAR"/>
 </resultMap>
 <sql id="FirstStat_Column_List">
     dailyActive,newUserNum,bugNum,avgUsedTime

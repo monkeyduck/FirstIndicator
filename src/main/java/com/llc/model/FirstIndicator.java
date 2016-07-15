@@ -6,11 +6,21 @@ package com.llc.model;
 public class FirstIndicator {
     private int dailyActive;
 
-    private int dailyNewUser;
+    private int newUserNum;
 
-    private int fatalBugNum;
+    private int bugNum;
 
     private float avgUsedTime;
+
+    public String getDisplaytime() {
+        return displaytime;
+    }
+
+    public void setDisplaytime(String displaytime) {
+        this.displaytime = displaytime;
+    }
+
+    private String displaytime;
 
     public int getDailyActive() {
         return dailyActive;
@@ -21,19 +31,19 @@ public class FirstIndicator {
     }
 
     public int getDailyNewUser() {
-        return dailyNewUser;
+        return newUserNum;
     }
 
     public void setDailyNewUser(int dailyNewUser) {
-        this.dailyNewUser = dailyNewUser;
+        this.newUserNum = dailyNewUser;
     }
 
-    public int getFatalBugNum() {
-        return fatalBugNum;
+    public int getBugNum() {
+        return bugNum;
     }
 
-    public void setFatalBugNum(int fatalBugNum) {
-        this.fatalBugNum = fatalBugNum;
+    public void setBugNum(int bugNum) {
+        this.bugNum = bugNum;
     }
 
     public double getAvgUsedTime() {

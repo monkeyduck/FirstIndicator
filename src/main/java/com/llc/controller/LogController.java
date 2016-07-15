@@ -89,9 +89,9 @@ public class LogController {
     @RequestMapping(value="/upload", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
     public ModelAndView checkAndAnalyse(@RequestParam("file")MultipartFile multipartFile) throws
             IOException, InterruptedException {
+
         File file = Utils.convert(multipartFile);
         Utils.writeToTxt(file);
-
         DateTime datetime = new DateTime();
         String dateSuffix = datetime.toString("yyyyMMddhhmmss");
 
@@ -99,6 +99,7 @@ public class LogController {
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
         mainLabel.runPython(dateSuffix);
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("analyseLog");
 //        File result = new File("/Users/linchuan/IdeaProjects/LogWebService/py/svm_test.predict");
