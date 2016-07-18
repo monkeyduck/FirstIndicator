@@ -60,15 +60,15 @@
     <!-- Example row of columns -->
     <div class="row">
         <div class="span4">
-            <h2>Analyse Log</h2>
+            <h2>日志分析</h2>
             <p><a class="btn btn-success btn-large" href="<%=basePath%>log/analyseLog">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>Search Log</h2>
-            <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
+            <h2>一级指标统计</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/first">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>Download Log</h2>
+            <h2>日志检索和下载</h2>
             <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
         </div>
     </div>

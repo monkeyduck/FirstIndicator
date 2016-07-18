@@ -4,23 +4,65 @@ package com.llc.model;
  * Created by llc on 16/7/14.
  */
 public class FirstIndicator {
+
+    private int totalUserNum;
+
     private int dailyActive;
 
     private int newUserNum;
 
     private int bugNum;
 
-    private float avgUsedTime;
+    private float retention;
 
-    public String getDisplaytime() {
-        return displaytime;
+    public float getRetention() {
+        return retention;
     }
 
-    public void setDisplaytime(String displaytime) {
-        this.displaytime = displaytime;
+    public String getValueColumn(int column){
+        if (column == 1){
+            return ""+totalUserNum;
+        }
+        else if (column == 2){
+            return ""+dailyActive;
+        }
+        else if (column == 3){
+            return "";
+        }
+        return "";
     }
 
-    private String displaytime;
+    public void setRetention(float retention) {
+        this.retention = retention;
+    }
+
+    private float avgUsedTimePerUser;
+
+    private String displayTime;
+
+    public void setTotalUserNum(int totalUserNum) {
+        this.totalUserNum = totalUserNum;
+    }
+
+    public int getNewUserNum() {
+        return newUserNum;
+    }
+
+    public void setNewUserNum(int newUserNum) {
+        this.newUserNum = newUserNum;
+    }
+
+    public String getDisplayTime() {
+        return displayTime;
+    }
+
+    public void setDisplayTime(String displayTime) {
+        this.displayTime = displayTime;
+    }
+
+    public int getTotalUserNum() {
+        return totalUserNum;
+    }
 
     public int getDailyActive() {
         return dailyActive;
@@ -46,11 +88,11 @@ public class FirstIndicator {
         this.bugNum = bugNum;
     }
 
-    public double getAvgUsedTime() {
-        return avgUsedTime;
+    public float getAvgUsedTimePerUser() {
+        return avgUsedTimePerUser;
     }
 
-    public void setAvgUsedTime(float avgUsedTime) {
-        this.avgUsedTime = avgUsedTime;
+    public void setAvgUsedTimePerUser(float avgUsedTimePerUser) {
+        this.avgUsedTimePerUser = avgUsedTimePerUser;
     }
 }

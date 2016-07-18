@@ -4,16 +4,32 @@
 <mapper namespace="com.llc.dao.StatDao">
 <resultMap id="FirstIndicatorMap" type="com.llc.model.FirstIndicator" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="totalUserNum" property="totalUserNum" jdbcType="INTEGER"/>
     <result column="dailyActive" property="dailyActive" jdbcType="INTEGER" />
     <result column="newUserNum" property="newUserNum" jdbcType="INTEGER" />
-    <result column="bugNum" property="bugNum" jdbcType="INTEGER" />
     <result column="avgUsedTime" property="avgUsedTime" jdbcType="FLOAT" />
-    <result column="displaytime" property="displaytime" jdbcType="VARCHAR"/>
+    <result column="retention" property="retention" jdbcType="FLOAT"/>
+    <result column="bugNum" property="bugNum" jdbcType="INTEGER" />
+    <result column="displayTime" property="displayTime" jdbcType="VARCHAR"/>
 </resultMap>
-<sql id="FirstStat_Column_List">
-    dailyActive,newUserNum,bugNum,avgUsedTime
-</sql>
-<select id="getStatistic" resultMap="FirstIndicatorMap">
-    SELECT <include refid="FirstStat_Column_List"/> from displaydata ORDER BY id DESC limit 0,1
-</select>
+
+    <sql id="FirstStat_Column_List">
+      totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,bugNum,displayTime
+    </sql>
+    <select id="getStatistic" resultMap="FirstIndicatorMap">
+      SELECT <include refid="FirstStat_Column_List"/> from displaydata ORDER BY id ASC
+    </select>
+    <select id="getStatisticByVersion" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT <include refid="FirstStat_Column_List"/> from display_version
+        where version=#{version} ORDER BY displayTime DESC limit 0,48
+    </select>
+    <select id="getStatisticByDate" resultMap="FirstIndicatorMap">
+        SELECT <include refid="FirstStat_Column_List"/> from firstindicator ORDER BY id DESC
+    </select>
+    <select id="getVersionList" resultType="java.lang.String">
+        SELECT version from versionset ORDER BY version ASC
+    </select>
+    <!--<select id="getChartData" resultMap="FirstIndicatorMap" parameterType="java.lang.String">-->
+        <!--SELECT displayTime,#{column} from -->
+    <!--</select>-->
 </mapper>
