@@ -17,7 +17,7 @@
       totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,bugNum,displayTime
     </sql>
     <select id="getStatistic" resultMap="FirstIndicatorMap">
-      SELECT <include refid="FirstStat_Column_List"/> from displaydata ORDER BY id ASC
+      SELECT <include refid="FirstStat_Column_List"/> from displaydata ORDER BY id DESC
     </select>
     <select id="getStatisticByVersion" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
         SELECT <include refid="FirstStat_Column_List"/> from display_version
