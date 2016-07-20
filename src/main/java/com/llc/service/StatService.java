@@ -19,4 +19,7 @@ public interface StatService {
     List<String> getVersionList();
 
     Map<String,String> getChartData(String column);
+
+    List<FirstIndicator> getStatisticByVersionByDate(String version);
+
 }

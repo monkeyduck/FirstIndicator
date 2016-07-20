@@ -20,4 +20,6 @@ public interface StatDao {
 
     Map<String,String> getChartData(String column);
 
+    List<FirstIndicator> getStatisticByVersionByDate(String version);
+
 }

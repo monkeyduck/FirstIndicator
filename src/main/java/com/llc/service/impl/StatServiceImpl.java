@@ -36,4 +36,9 @@ public class StatServiceImpl implements StatService{
     public Map<String,String> getChartData(String column){
         return this.statDao.getChartData(column);
     }
+
+    public List<FirstIndicator> getStatisticByVersionByDate(String version){
+        return this.statDao.getStatisticByVersionByDate(version);
+    }
+
 }

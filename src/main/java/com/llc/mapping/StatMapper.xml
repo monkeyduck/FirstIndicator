@@ -17,17 +17,23 @@
       totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,bugNum,displayTime
     </sql>
     <select id="getStatistic" resultMap="FirstIndicatorMap">
-      SELECT <include refid="FirstStat_Column_List"/> from displaydata ORDER BY id DESC
+      SELECT <include refid="FirstStat_Column_List"/> from firstindicator_hour ORDER BY id
     </select>
     <select id="getStatisticByVersion" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
-        SELECT <include refid="FirstStat_Column_List"/> from display_version
-        where version=#{version} ORDER BY displayTime DESC limit 0,48
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_version
+        where version=#{version} ORDER BY displayTime DESC limit 0,49) AS TMPTable ORDER BY displayTime
     </select>
     <select id="getStatisticByDate" resultMap="FirstIndicatorMap">
-        SELECT <include refid="FirstStat_Column_List"/> from firstindicator ORDER BY id DESC
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from firstindicator ORDER BY id DESC
+        limit 0,15) AS tmp ORDER BY displayTime
     </select>
     <select id="getVersionList" resultType="java.lang.String">
         SELECT version from versionset ORDER BY version ASC
+    </select>
+    <select id="getStatisticByVersionByDate" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_version
+        where version=#{version} and displayTime like '%23:00:00%' ORDER BY displayTime DESC limit 0,15)
+        AS TMPTable ORDER BY displayTime
     </select>
     <!--<select id="getChartData" resultMap="FirstIndicatorMap" parameterType="java.lang.String">-->
         <!--SELECT displayTime,#{column} from -->

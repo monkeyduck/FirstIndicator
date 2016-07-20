@@ -67,9 +67,25 @@ public class StatController {
     }
 
     @RequestMapping("/version")
-    public ModelAndView displayByVersion(@RequestParam(value = "version") String version){
+    public ModelAndView displayByVersion(@RequestParam(value = "version") String version,
+                                         @RequestParam(value = "type") String type){
         ModelAndView mv = new ModelAndView();
-        List<FirstIndicator> indicators = statService.getStatisticByVersion(version);
+        List<FirstIndicator> indicators;
+        if (version.equals("all")){
+            if (type.equals("date")){
+                indicators = statService.getStatisticByDate();
+            }else{
+                indicators = statService.getStatistic();
+            }
+        }
+        else{
+            if (type.equals("date")){
+                indicators = statService.getStatisticByVersionByDate(version);
+            }
+            else{
+                indicators = statService.getStatisticByVersion(version);
+            }
+        }
         List<String> versions = statService.getVersionList();
         List<List<String>> chartData = getChartData(indicators);
         mv.addObject("chartData", chartData);
@@ -79,12 +95,12 @@ public class StatController {
         return mv;
     }
 
-    @RequestMapping("/chart")
-    public JSONObject displayChart(@RequestParam(value = "column") String column){
-        Map<String, String> chartData = statService.getChartData(column);
-        JSONObject json = JSONObject.fromObject(chartData);
-        return json;
-
-    }
+//    @RequestMapping("/chart")
+//    public JSONObject displayChart(@RequestParam(value = "column") String column){
+//        Map<String, String> chartData = statService.getChartData(column);
+//        JSONObject json = JSONObject.fromObject(chartData);
+//        return json;
+//
+//    }
 
 }

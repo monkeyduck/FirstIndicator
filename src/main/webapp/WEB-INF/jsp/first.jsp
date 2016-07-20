@@ -59,7 +59,7 @@
             </a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a href="<%=basePath%>log/index">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -80,8 +80,9 @@
                 <option value="${version}">${version}</option>
             </c:forEach>
         </select>
+
         <div style="float: left">
-            <button class="btn btn-default" id="button_version" onclick="displayByVersion()">按版本筛选</button>
+            <button class="btn" id="button_version" onclick="displayByVersion()">筛选</button>
         </div>
 
         <div style="float: right">
@@ -100,7 +101,7 @@
 
     <!-- Example row of columns -->
     <div class="row" id="table_data">
-        <table data-toggle="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>时间</th>
@@ -133,6 +134,15 @@
                     <td>${stat.bugNum}</td>
                 </tr>
             </c:forEach>
+                <tr>
+                    <td>    </td>
+                    <td><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(1)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(2)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(3)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(4)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
+                </tr>
             </tbody>
 
         </table>
@@ -173,45 +183,21 @@
 
 </body>
 <script type="text/javascript">
-    <%--var my2Chart = echarts.init(document.getElementById('main'));--%>
-    <%--var showData = ${chartData[3]};--%>
-    <%--var xaxis = ${chartData[6]};--%>
-    <%--// 指定图表的配置项和数据--%>
-    <%--var option = {--%>
-        <%--title: {--%>
-            <%--text: 'ECharts 入门示例'--%>
-        <%--},--%>
-        <%--tooltip: {},--%>
-        <%--legend: {--%>
-            <%--data:['销量']--%>
-        <%--},--%>
-        <%--xAxis: {--%>
-            <%--data: xaxis--%>
-        <%--},--%>
-        <%--yAxis: {},--%>
-        <%--series: [{--%>
-            <%--name: '销量',--%>
-            <%--type: 'line',--%>
-            <%--data: showData--%>
-        <%--}]--%>
-    <%--};--%>
-
-    <%--// 使用刚指定的配置项和数据显示图表。--%>
-    <%--my2Chart.setOption(option);--%>
-
     function displayByDate() {
-        window.location.href = '<%=basePath%>stat/first?&type=date';
+        var version = document.getElementById("versionSelect").value;
+        window.location.href = '<%=basePath%>stat/version?&type=date&version='+version;
 //        document.getElementById("button_date").style.display = 'none';
 //        document.getElementById("button_hour").style.display = 'block';
     }
     function displayByHour() {
-        window.location.href = '<%=basePath%>stat/first?type=hour';
+        var version = document.getElementById("versionSelect").value;
+        window.location.href = '<%=basePath%>stat/version?type=hour&version='+version;
 //        document.getElementById("button_date").style.display = 'block';
 //        document.getElementById("button_hour").style.display = 'none';
     }
     function displayByVersion() {
         var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?version='+version;
+        window.location.href = '<%=basePath%>stat/version?version='+version+'&type=time';
     }
     function chart(index){
         // 基于准备好的dom，初始化echarts实例

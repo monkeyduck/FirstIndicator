@@ -2,6 +2,7 @@ package com.llc.controller;
 
 import com.caikang.com.pitch.MainLabel;
 import com.llc.service.LogService;
+import com.llc.service.UserService;
 import com.llc.utils.DownloadFileUtil;
 import com.llc.utils.Utils;
 import org.slf4j.Logger;
@@ -31,6 +32,9 @@ public class LogController {
 
     @Resource(name="LogService")
     private LogService logService;
+
+    @Resource(name = "UserService")
+    private UserService userService;
 
     @RequestMapping("/index")
     public String index(){
