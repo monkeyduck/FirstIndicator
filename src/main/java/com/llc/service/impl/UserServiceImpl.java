@@ -1,6 +1,7 @@
 package com.llc.service.impl;
 
 import com.llc.dao.UserDao;
+import com.llc.model.User;
 import com.llc.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,9 @@ public class UserServiceImpl implements UserService {
 
     public String getPassword(String username) {
         return userDao.getPassword(username);
+    }
+
+    public User getUserByUsername(String username){
+        return this.userDao.getUserByUsername(username);
     }
 }

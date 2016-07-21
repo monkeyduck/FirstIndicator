@@ -101,9 +101,10 @@ public class FirstIndicator {
         this.avgUsedTimePerUser = avgUsedTimePerUser;
     }
 
-    public List<String> calCompare(FirstIndicator last){
+    public List<String> calCompare(FirstIndicator last, String type){
         List<String> compare = new ArrayList<String>();
         float f;
+        compare.add(type.equals("date")?"周同比":"日同比");
         f = 100*Utils.devide(this.getTotalUserNum()-last.getTotalUserNum(),last.getTotalUserNum());
         compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getNewUserNum()-last.getNewUserNum(),last.getNewUserNum());

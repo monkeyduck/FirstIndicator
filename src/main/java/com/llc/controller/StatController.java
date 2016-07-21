@@ -108,13 +108,12 @@ public class StatController {
         if (len > 0){
             FirstIndicator cur = indicators.get(len-1);
             int gap = type.equals("date")?7:24;
-            compare.add(type.equals("date")?"周同比":"日同比");
             boolean first = true;
             for (int i=len-1;i>=0;i=i-gap){
                 if (first){
                     first = false;
                     if (i-gap>=0){
-                        compare = cur.calCompare(indicators.get(i-gap));
+                        compare = cur.calCompare(indicators.get(i-gap), type);
                     }
                 }
                 indexs.add(i);
