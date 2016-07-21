@@ -77,7 +77,7 @@
         <select style="float:left" class="selectpicker" id="versionSelect" style="width: 40px">
             <option value="all">全部版本</option>
             <c:forEach items="${versionList}" var="version">
-                <option value="${version}">${version}</option>
+                <option value="${version}" <c:if test="${version eq ver}">selected="selected"</c:if> >${version}</option>
             </c:forEach>
         </select>
 
@@ -101,7 +101,7 @@
 
     <!-- Example row of columns -->
     <div class="row" id="table_data">
-        <table class="table table-striped">
+        <table class="table table-striped" cellpadding="2px" cellspacing="2px">
             <thead>
                 <tr>
                     <th>时间</th>
@@ -116,16 +116,16 @@
             <tbody>
                 <tr>
                     <td>    </td>
-                    <td><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(1)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(2)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(3)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(4)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
+                    <td height="80%"><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(1)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(2)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(3)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(4)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(5)">画图</button> </td>
                 </tr>
             <c:forEach items="${firstStatList}" var="stat">
                 <tr>
-                    <td>${stat.displayTime}</td>
+                    <td height="80%">${stat.displayTime}</td>
                     <td>${stat.totalUserNum}</td>
                     <td>${stat.dailyNewUser}</td>
                     <td>${stat.dailyActive}</td>
@@ -134,6 +134,11 @@
                     <td>${stat.bugNum}</td>
                 </tr>
             </c:forEach>
+                <tr>
+                    <c:forEach items="${compare}" var="val">
+                        <td>${val}</td>
+                    </c:forEach>
+                </tr>
                 <tr>
                     <td>    </td>
                     <td><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
@@ -149,7 +154,7 @@
     </div>
     <div class="row">
         <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        <div id="main" style="width: 600px;height:400px; text-align: center"></div>
+        <div id="main" style="width: 960px;height:400px; text-align: center"></div>
         <div class="btn-success" style="float:right">
             <button class="btn-success" id="exportExcel" >导出excel</button>
         </div>

@@ -32,19 +32,20 @@ public class StatController {
         List<FirstIndicator> indicators;
         List<String> versions = statService.getVersionList();
         if (type==null){
+            type = "time";
+        }
+        if (type.equals("date")){
+            indicators = statService.getStatisticByDate();
+        }else{
             indicators = statService.getStatistic();
         }
-        else{
-            if (type.equals("date")){
-                indicators = statService.getStatisticByDate();
-            }else{
-                indicators = statService.getStatistic();
-            }
-        }
+        List<String> compare = calCompare(type, indicators);
         List<List<String>> chartData = getChartData(indicators);
         modelAndView.addObject("firstStatList", indicators);
         modelAndView.addObject("versionList", versions);
         modelAndView.addObject("chartData", chartData);
+        modelAndView.addObject("compare", compare);
+        modelAndView.addObject("type", type);
         modelAndView.setViewName("first");
         return modelAndView;
     }
@@ -88,13 +89,39 @@ public class StatController {
         }
         List<String> versions = statService.getVersionList();
         List<List<String>> chartData = getChartData(indicators);
+        List<String> compare = calCompare(type, indicators);
+
         mv.addObject("chartData", chartData);
         mv.addObject("firstStatList", indicators);
         mv.addObject("versionList", versions);
+        mv.addObject("ver", version);
+        mv.addObject("compare", compare);
+        mv.addObject("type", type);
         mv.setViewName("first");
         return mv;
     }
 
+    public List<String> calCompare(String type, List<FirstIndicator> indicators){
+        int len = indicators.size();
+        List<String> compare = new ArrayList<String>();
+        List<Integer> indexs = new ArrayList<Integer>();
+        if (len > 0){
+            FirstIndicator cur = indicators.get(len-1);
+            int gap = type.equals("date")?7:24;
+            compare.add(type.equals("date")?"周同比":"日同比");
+            boolean first = true;
+            for (int i=len-1;i>=0;i=i-gap){
+                if (first){
+                    first = false;
+                    if (i-gap>=0){
+                        compare = cur.calCompare(indicators.get(i-gap));
+                    }
+                }
+                indexs.add(i);
+            }
+        }
+        return compare;
+    }
 //    @RequestMapping("/chart")
 //    public JSONObject displayChart(@RequestParam(value = "column") String column){
 //        Map<String, String> chartData = statService.getChartData(column);

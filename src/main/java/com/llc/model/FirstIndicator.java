@@ -1,5 +1,10 @@
 package com.llc.model;
 
+import com.llc.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by llc on 16/7/14.
  */
@@ -94,5 +99,24 @@ public class FirstIndicator {
 
     public void setAvgUsedTimePerUser(float avgUsedTimePerUser) {
         this.avgUsedTimePerUser = avgUsedTimePerUser;
+    }
+
+    public List<String> calCompare(FirstIndicator last){
+        List<String> compare = new ArrayList<String>();
+        float f;
+        f = 100*Utils.devide(this.getTotalUserNum()-last.getTotalUserNum(),last.getTotalUserNum());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getNewUserNum()-last.getNewUserNum(),last.getNewUserNum());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getDailyActive()-last.getDailyActive(),last.getDailyActive());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getAvgUsedTimePerUser()-last.getAvgUsedTimePerUser(),
+                last.getAvgUsedTimePerUser());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getRetention()-last.getRetention(),last.getRetention());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getBugNum()-last.getBugNum(),last.getBugNum());
+        compare.add(String.format("%.2f%%", f));
+        return compare;
     }
 }

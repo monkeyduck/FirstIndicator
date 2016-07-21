@@ -77,4 +77,14 @@ public class Utils {
         fileWriter.close();
         inputStreamReader.close();
     }
+
+    public static float devide(int d1, int d2){
+        if (d2==0) return 0f;
+        else return (float)d1/d2;
+    }
+
+    public static float devide(float f1, float f2){
+        if (f2==0f) return 0f;
+        else return f1/f2;
+    }
 }
