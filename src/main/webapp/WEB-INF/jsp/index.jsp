@@ -68,8 +68,8 @@
             <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/first">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>日志检索和下载</h2>
-            <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
+            <h2>音频情绪分析</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/record">Enter</a></p>
         </div>
     </div>
     <hr>

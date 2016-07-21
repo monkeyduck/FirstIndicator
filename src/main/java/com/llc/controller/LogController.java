@@ -93,6 +93,10 @@ public class LogController {
         return mv;
     }
 
+    @RequestMapping("/record")
+    public String record(){
+        return "record";
+    }
     @RequestMapping("/queryLogs")
     public ModelAndView queryLog(HttpServletRequest request, HttpServletResponse response,
                                  @RequestParam("member_id") String member_id, @RequestParam("time") String time)
