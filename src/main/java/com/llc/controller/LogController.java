@@ -51,6 +51,7 @@ public class LogController {
     @RequestMapping("/tologin")
     public String tologin(HttpServletRequest request, HttpServletResponse response, Model model){
         logger.debug("来自IP[" + request.getRemoteHost() + "]的访问");
+        System.out.println("来自IP[" + request.getRemoteHost() + "]的访问");
         return "login";
     }
 

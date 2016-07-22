@@ -42,7 +42,7 @@
             </a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a href="<%=basePath%>log/index">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -52,7 +52,7 @@
 </div>
 <div class="container">
 
-    <form class="form-horizontal" action="<%=basePath%>/log/login" method="post">
+    <form class="form-horizontal" action="<%=basePath%>log/login" method="post">
         <div class="control-group">
             <label class="control-label" for="username">Username</label>
             <div class="controls">
@@ -71,6 +71,7 @@
                     <input type="checkbox"> Remember me
                 </label>
                 <button type="submit" class="btn">Sign in</button>
+                <div class="text-error">${message_login}</div>
             </div>
         </div>
     </form>

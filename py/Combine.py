@@ -37,7 +37,7 @@ def tf_idf(label_file):
     preprocess_tfidf(label_file)
     window_size = 40
     step_size = 20
-    threshold = 0.3
+    threshold = 0.38
     key_map = {}
     dic = {}
     file = 'tf.idf'
@@ -85,6 +85,8 @@ def tf_idf(label_file):
                         key_map[member_id][time]=[]
                     key_map[member_id][time].append(word[j])
                 # repeat_file.write(index[i]+'\t'+word[j]+'\t'+str(weight[i][j])+'\n')
+                print word[j], str(weight[i][j])
+
     return key_map
 
 
@@ -124,10 +126,11 @@ def context_repeat(sentence, keyword_map):
     member_id = sentence.split('\t')[0]
     time = sentence.split('\t')[1]
     content = sentence.split('\t')[5]
+    xiaole_word = sentence.split('\t')[4]
     if member_id in keyword_map.keys():
         if time in keyword_map[member_id].keys():
             for keyword in keyword_map[member_id][time]:
-                if keyword in content:
+                if keyword in content and keyword not in xiaole_word:
                     return '1'
     return '0'
 
@@ -159,10 +162,11 @@ def context_repeat_counts(sentences, keyword_map):
         member_id = sentence.split('\t')[0]
         time = sentence.split('\t')[1]
         content = sentence.split('\t')[5]
+        xiaole_word = sentence.split('\t')[4]
         if member_id in keyword_map.keys():
             if time in keyword_map[member_id].keys():
                 for keyword in keyword_map[member_id][time]:
-                    if keyword in content:
+                    if keyword in content and keyword not in xiaole_word:
                         cnt += 1
     if cnt >= max_cnt:
         return '1'

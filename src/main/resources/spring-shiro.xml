@@ -28,12 +28,13 @@
     <!-- Shiro Filter -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager" />
-        <property name="loginUrl" value="/log/login" />
+        <property name="loginUrl" value="/log/tologin" />
         <property name="successUrl" value="/log/index" />
         <property name="unauthorizedUrl" value="/error/noperms.jsp" />
         <property name="filterChainDefinitions">
             <value>
                 /index.html = authc
+                /log/login = anon
                 /login.html = anon
                 /tologin.html = anon
                 /logout.html = anon
