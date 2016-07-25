@@ -2,7 +2,9 @@ package com.caikang.com.pitch;
 
 import com.aliyun.oss.OSSClient;
 import com.caikang.com.rule.GetLoudnessSeq;
+import com.caikang.com.utils.HttpTookit;
 import com.caikang.com.utils.OSSHelper;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,20 @@ public class MainLabel {
 		}
 		return label;
 	}
+
+    public static String getEmokitLabel(String filename){
+        HttpTookit tookit = new HttpTookit();
+        try{
+            String resp = tookit.sendPost(filename);
+            System.out.println(resp);
+            JSONObject json = JSONObject.fromObject(resp);
+            JSONObject json2 = JSONObject.fromObject(json.getString("infovoice"));
+            return json2.getString("rc_main");
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return "null";
+    }
 
 //	public static void main(String args[]) throws IOException {
 //		createAudioLabel();
@@ -88,8 +104,9 @@ public class MainLabel {
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (String audioRecord: audioList){
             int label = getLabel(audioRecord);
+            String emoRe = getEmokitLabel(audioRecord);
             labelList.add(label);
-            bufferedWriter.write(""+label+"\n");
+            bufferedWriter.write(""+label+"\t"+emoRe+"\n");
         }
         bufferedWriter.close();
         fileWriter.close();
