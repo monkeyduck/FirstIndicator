@@ -33,11 +33,9 @@
         <property name="unauthorizedUrl" value="/error/noperms.jsp" />
         <property name="filterChainDefinitions">
             <value>
-                /index.html = authc
+                /log/tologin = anon
                 /log/login = anon
-                /login.html = anon
-                /tologin.html = anon
-                /logout.html = anon
+                /resources/* = anon
                 /** = authc
             </value>
         </property>
