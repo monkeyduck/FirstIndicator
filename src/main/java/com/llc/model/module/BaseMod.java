@@ -32,7 +32,7 @@ public class BaseMod {
         this.fromTime = dt.toString("yyyy-MM-dd HH:mm:ss");
         dt = new DateTime(Long.parseLong(json.getString("toTime")));
         this.toTime = dt.toString("yyyy-MM-dd HH:mm:ss");
-        this.usedTime = Integer.parseInt(usedTime)/1000/60;
+        this.usedTime = Integer.parseInt(usedTime)/1000/60+1;
 
     }
 
