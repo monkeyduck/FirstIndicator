@@ -139,14 +139,14 @@ public class StatController {
         return compare;
     }
 
-    private float calTotalUsed(DateTime date, String member_id){
+    private int calTotalUsed(DateTime date, String member_id){
         String dtLike = String.format("%s%%",date.toString("yyyy-MM-dd"));
         List<String> usedTime = moduleService.getUsedTime(member_id,dtLike);
         long used_t = 0l;
         for (String su:usedTime){
             used_t += Long.parseLong(su);
         }
-        return (float)used_t/1000/60;
+        return (int)used_t/1000/60;
     }
 
     @RequestMapping("/parent")
@@ -155,9 +155,9 @@ public class StatController {
                                     @RequestParam("member_id") String member_id){
         DateTime dt = new DateTime(date);
         System.out.println(dt.toString("yyyy-MM-dd"));
-        float today = calTotalUsed(dt, member_id);
+        int today = calTotalUsed(dt, member_id);
         dt = dt.minusDays(1);
-        float yest = calTotalUsed(dt, member_id);
+        int yest = calTotalUsed(dt, member_id);
         JSONObject result = new JSONObject();
         result.put("today", today);
         result.put("yesterday", yest);

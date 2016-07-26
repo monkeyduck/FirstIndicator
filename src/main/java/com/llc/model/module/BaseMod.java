@@ -1,6 +1,7 @@
 package com.llc.model.module;
 
 import net.sf.json.JSONObject;
+import org.joda.time.DateTime;
 
 /**
  * Created by llc on 16/7/25.
@@ -12,7 +13,7 @@ public class BaseMod {
 
     protected String module;
 
-    protected String usedTime;
+    protected int usedTime;
 
     protected String name;
 
@@ -27,9 +28,11 @@ public class BaseMod {
             throw new NullPointerException("content is null");
         }
         JSONObject json = JSONObject.fromObject(content);
-        this.fromTime = json.getString("fromTime");
-        this.toTime = json.getString("toTime");
-        this.usedTime = usedTime;
+        DateTime dt = new DateTime(Long.parseLong(json.getString("fromTime")));
+        this.fromTime = dt.toString("yyyy-MM-dd HH:mm:ss");
+        dt = new DateTime(Long.parseLong(json.getString("toTime")));
+        this.toTime = dt.toString("yyyy-MM-dd HH:mm:ss");
+        this.usedTime = Integer.parseInt(usedTime)/1000/60;
 
     }
 
@@ -49,7 +52,7 @@ public class BaseMod {
         return module;
     }
 
-    public String getUsedTime() {
+    public int getUsedTime() {
         return usedTime;
     }
 
@@ -59,8 +62,7 @@ public class BaseMod {
 
     public void merge(BaseMod cur){
         this.toTime = cur.getToTime();
-        long used = Long.parseLong(usedTime);
-        long curUsed = Long.parseLong(cur.getUsedTime());
-        this.usedTime = Long.toString(used+curUsed);
+        int curUsed = cur.getUsedTime();
+        this.usedTime = usedTime+curUsed;
     }
 }
