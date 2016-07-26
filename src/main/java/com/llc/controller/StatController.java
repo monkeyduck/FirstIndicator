@@ -1,31 +1,19 @@
 package com.llc.controller;
 
 import com.llc.model.FirstIndicator;
-import com.llc.model.module.BaseMod;
-import com.llc.model.module.dialogMod;
-import com.llc.model.module.gameMod;
-import com.llc.model.module.mediaMod;
-import com.llc.model.moduleInfo;
-import com.llc.service.ModuleService;
 import com.llc.service.StatService;
-import net.sf.json.JSONObject;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by llc on 16/7/12.
@@ -35,9 +23,6 @@ import java.util.Map;
 public class StatController {
     @Resource(name="StatService")
     private StatService statService;
-
-    @Resource(name="ModuleService")
-    private ModuleService moduleService;
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);
 
@@ -139,65 +124,4 @@ public class StatController {
         return compare;
     }
 
-    private int calTotalUsed(DateTime date, String member_id){
-        String dtLike = String.format("%s%%",date.toString("yyyy-MM-dd"));
-        List<String> usedTime = moduleService.getUsedTime(member_id,dtLike);
-        long used_t = 0l;
-        for (String su:usedTime){
-            used_t += Long.parseLong(su);
-        }
-        return (int)used_t/1000/60;
-    }
-
-    @RequestMapping("/parent")
-    @ResponseBody
-    public JSONObject getParentData(@RequestParam("date") String date,
-                                    @RequestParam("member_id") String member_id){
-        DateTime dt = new DateTime(date);
-        System.out.println(dt.toString("yyyy-MM-dd"));
-        int today = calTotalUsed(dt, member_id);
-        dt = dt.minusDays(1);
-        int yest = calTotalUsed(dt, member_id);
-        JSONObject result = new JSONObject();
-        result.put("today", today);
-        result.put("yesterday", yest);
-        String dateLike = String.format("%s%%",date);
-        List<moduleInfo> moduleList = moduleService.getModuleInfo(member_id,dateLike);
-        List<BaseMod> modList = new ArrayList<BaseMod>();
-        BaseMod lastMod = null;
-        for (moduleInfo mInfo: moduleList){
-            String mode = mInfo.getModule();
-            BaseMod curMod=null;
-            try{
-                if (mode.equals("dialog")){
-                    curMod = new dialogMod(mInfo.getContent(), mInfo.getUsedTime());
-                }
-                else if (mode.toLowerCase().contains("game")){
-                    curMod = new gameMod(mode, mInfo.getContent(), mInfo.getUsedTime());
-                }
-                else{
-                    curMod = new mediaMod(mode, mInfo.getContent(), mInfo.getUsedTime());
-                }
-            }catch (Exception e){
-                logger.error(e.getMessage());
-                continue;
-            }
-
-            if (lastMod != null){
-                if (!lastMod.getModule().equals(curMod.getModule())){
-                    modList.add(lastMod);
-                    lastMod = curMod;
-                }
-                else{
-                    lastMod.merge(curMod);
-                }
-            }
-            else{
-                lastMod = curMod;
-            }
-        }
-        if (lastMod != null) modList.add(lastMod);
-        result.put("list",modList);
-        return result;
-    }
 }
