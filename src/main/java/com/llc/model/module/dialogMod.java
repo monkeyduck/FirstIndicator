@@ -12,8 +12,8 @@ public class dialogMod extends BaseMod {
         JSONObject json = JSONObject.fromObject(content);
         this.module = "dialog";
         this.name = json.getString("topic");
-        if (name.equals("")){
-            throw new NullPointerException("topic is null");
+        if (name.equals("") || name.startsWith("file")){
+            throw new NullPointerException("topic is null or starts with file");
         }
         this.num = 1;
     }
