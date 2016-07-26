@@ -104,7 +104,7 @@ public class MainLabel {
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (String audioRecord: audioList){
             int label = getLabel(audioRecord);
-            String emoRe = getEmokitLabel(audioRecord);
+//            String emoRe = getEmokitLabel(audioRecord);
             labelList.add(label);
             bufferedWriter.write(""+label+"\n");
         }
