@@ -106,7 +106,7 @@ public class MainLabel {
             int label = getLabel(audioRecord);
             String emoRe = getEmokitLabel(audioRecord);
             labelList.add(label);
-            bufferedWriter.write(""+label+"\t"+emoRe+"\n");
+            bufferedWriter.write(""+label+"\n");
         }
         bufferedWriter.close();
         fileWriter.close();
