@@ -452,8 +452,8 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        # label = '1' if fl[i].split('\t')[7] else '0'
-        label = '0'
+        label = '1' if fl[i].split('\t')[6].strip()=='1' else '0'
+        #label = '0'
         labels.append(label)
         feature += label
         weka_list.append(feature + '\n')
@@ -510,8 +510,8 @@ if __name__ == '__main__':
     my_test(suffix)
     # runSVM()
     # classifyByModule(labelf, suffix)
-    # calculate_confusion('svm_test', 'annotation.txt')
-    # list_wrong_case('svm_test', 'predict_'+suffix+'.txt')
+    calculate_confusion('svm_test', 'annotation.txt')
+    list_wrong_case('svm_test', 'predict_'+suffix+'.txt')
     calculate_confusion('svm_test', 'predict_'+suffix+'.txt')
 
 

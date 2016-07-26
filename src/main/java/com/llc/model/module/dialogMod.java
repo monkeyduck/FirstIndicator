@@ -1,0 +1,27 @@
+package com.llc.model.module;
+
+import net.sf.json.JSONObject;
+
+/**
+ * Created by llc on 16/7/25.
+ */
+public class dialogMod extends BaseMod {
+
+    public dialogMod(String content, String usedTime){
+        super(content, usedTime);
+        JSONObject json = JSONObject.fromObject(content);
+        this.module = "dialog";
+        this.name = json.getString("topic");
+        if (name.equals("")){
+            throw new NullPointerException("topic is null");
+        }
+        this.num = 1;
+    }
+
+    @Override
+    public void merge(BaseMod cur){
+        super.merge(cur);
+        this.name += ","+cur.getName();
+        this.num++;
+    }
+}

@@ -17,7 +17,8 @@
       totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,bugNum,displayTime
     </sql>
     <select id="getStatistic" resultMap="FirstIndicatorMap">
-      SELECT <include refid="FirstStat_Column_List"/> from firstindicator_hour ORDER BY id
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from firstindicator_hour ORDER BY id DESC
+        limit 0,49) AS HourTmp ORDER BY displayTime
     </select>
     <select id="getStatisticByVersion" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
         SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_version
