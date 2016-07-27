@@ -54,7 +54,7 @@ public class StatController {
 
     private List<List<String>> getChartData(List<FirstIndicator> indicators){
         List<List<String>> chartData = new ArrayList<List<String>>();
-        for (int i=0;i<7;i++){
+        for (int i=0;i<9;i++){
             chartData.add(new ArrayList<String>());
         }
         for (FirstIndicator fi: indicators){
@@ -63,8 +63,10 @@ public class StatController {
             chartData.get(2).add(""+fi.getDailyActive());
             chartData.get(3).add(""+fi.getAvgUsedTimePerUser());
             chartData.get(4).add(""+fi.getRetention());
-            chartData.get(5).add(""+fi.getBugNum());
-            chartData.get(6).add(String.format("'%s'",fi.getDisplayTime()));
+            chartData.get(5).add(""+fi.getRetention_3());
+            chartData.get(6).add(""+fi.getRetention_7());
+            chartData.get(7).add(""+fi.getBugNum());
+            chartData.get(8).add(String.format("'%s'",fi.getDisplayTime()));
         }
         return chartData;
     }

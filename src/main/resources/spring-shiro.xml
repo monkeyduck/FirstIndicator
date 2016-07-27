@@ -36,7 +36,6 @@
                 /log/tologin = anon
                 /log/login = anon
                 /resources/** = anon
-                /stat/parent/** = anon
                 /** = authc
             </value>
         </property>

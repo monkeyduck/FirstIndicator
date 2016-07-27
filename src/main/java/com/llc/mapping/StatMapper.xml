@@ -9,12 +9,15 @@
     <result column="newUserNum" property="newUserNum" jdbcType="INTEGER" />
     <result column="avgUsedTime" property="avgUsedTime" jdbcType="FLOAT" />
     <result column="retention" property="retention" jdbcType="FLOAT"/>
+    <result column="retention_3" property="retention_3" jdbcType="FLOAT"/>
+    <result column="retention_7" property="retention_7" jdbcType="FLOAT"/>
     <result column="bugNum" property="bugNum" jdbcType="INTEGER" />
     <result column="displayTime" property="displayTime" jdbcType="VARCHAR"/>
 </resultMap>
 
     <sql id="FirstStat_Column_List">
-      totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,bugNum,displayTime
+      totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,retention_3,
+      retention_7,bugNum,displayTime
     </sql>
     <select id="getStatistic" resultMap="FirstIndicatorMap">
         SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from firstindicator_hour ORDER BY id DESC

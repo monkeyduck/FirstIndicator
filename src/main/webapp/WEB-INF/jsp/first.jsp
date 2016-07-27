@@ -110,7 +110,9 @@
                     <th>日活</th>
                     <th>日人均使用时长(分钟)</th>
                     <th>一日留存率</th>
-                    <th>严重bug数</th>
+                    <th>三日留存率</th>
+                    <th>七日留存率</th>
+                    <th>bug数</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,6 +124,9 @@
                     <td><button class="btn btn-default"  onclick="chart(3)">画图</button> </td>
                     <td><button class="btn btn-default"  onclick="chart(4)">画图</button> </td>
                     <td><button class="btn btn-default"  onclick="chart(5)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(6)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(7)">画图</button> </td>
+
                 </tr>
             <c:forEach items="${firstStatList}" var="stat">
                 <tr>
@@ -131,6 +136,8 @@
                     <td>${stat.dailyActive}</td>
                     <td>${stat.avgUsedTimePerUser}</td>
                     <td>${stat.retention}</td>
+                    <td>${stat.retention_3}</td>
+                    <td>${stat.retention_7}</td>
                     <td>${stat.bugNum}</td>
                 </tr>
             </c:forEach>
@@ -147,6 +154,9 @@
                     <td><button class="btn btn-default" onclick="chart(3)">画图</button> </td>
                     <td><button class="btn btn-default" onclick="chart(4)">画图</button> </td>
                     <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(6)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(7)">画图</button> </td>
+
                 </tr>
             </tbody>
 
@@ -206,13 +216,13 @@
     }
     function chart(index){
         // 基于准备好的dom，初始化echarts实例
-        var title_list = ['总用户数', '日新增用户数', '日活跃', '人均使用时长', '1日留存率', 'bug数'];
+        var title_list = ['总用户数', '日新增用户数', '日活跃', '人均使用时长', '1日留存率', '3日留存率', '7日留存率','bug数'];
         var title_name = title_list[index];
-        var label_list = ['人数', '人数', '人数', '分钟', '留存率', 'bug数'];
+        var label_list = ['人数', '人数', '人数', '分钟', '留存率', '留存率', '留存率', 'bug数'];
         var label = label_list[index];
         var myChart = echarts.init(document.getElementById('main'));
         var showData = eval($('#chartData').text())[index];
-        var xaxis = eval($('#chartData').text())[6];
+        var xaxis = eval($('#chartData').text())[8];
         // 指定图表的配置项和数据
         var option = {
             title: {

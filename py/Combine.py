@@ -85,7 +85,7 @@ def tf_idf(label_file):
                         key_map[member_id][time]=[]
                     key_map[member_id][time].append(word[j])
                 # repeat_file.write(index[i]+'\t'+word[j]+'\t'+str(weight[i][j])+'\n')
-                print word[j], str(weight[i][j])
+                #print word[j], str(weight[i][j])
 
     return key_map
 
@@ -102,7 +102,9 @@ def read_ignore():
         return [x.strip() for x in f.readlines()]
 
 
-def sentence_repeat(content):
+def sentence_repeat(sen):
+    xiaole = sen.split('\t')[4]
+    content = sen.split('\t')[5]
     content = '@'.join(jieba.cut(content))
     content = content.split('@')
     repeat_times = 2
@@ -115,9 +117,7 @@ def sentence_repeat(content):
             word_map[word] += 1
 
     for word in word_map.keys():
-        if word in ignore_words:
-            return '0'
-        if word_map[word] >= repeat_times and len(word)>=2:
+        if word_map[word] >= repeat_times and len(word)>=2 and word not in xiaole:
             return '1'
     return '0'
 
@@ -241,18 +241,16 @@ def xiaole_word(lines):
     repeat = '0'
     for i in range(len(lines) - 1):
         if sentences[i] == cur_sen:
-            repeat = '1'
-            break
-    shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
-    shake = '0'
-    for s in shake_sentence:
-        if s in sentences[-1]:
-            shake = '1'
-            break
+            return '1'
+    #shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
+    #shake = '0'
+    #for s in shake_sentence:
+    #    if s in sentences[-1]:
+    #        return '1'
     wrong_tip = '0'
     if 'wrong_tip' in cur_sen:
-        wrong_tip = '1'
-    return repeat + ',' + shake + ',' + wrong_tip
+        return '1'
+    return '0'
 
 
 def add_negative(feature):
@@ -437,7 +435,7 @@ def extract_features(label_file):
         end = i + related_numbers+1 if i+related_numbers < len(fl) else len(fl)
         feature = ''
         feature += caikang[i] + ','
-        feature += sentence_repeat(fl[i].split('\t')[5]) + ','
+        feature += sentence_repeat(fl[i]) + ','
         feature += context_repeat(fl[i], keyword_map) + ','
         feature += context_repeat_counts(fl[start:end], keyword_map) + ','
         feature += neg_word_counts(neg_dic, fl[start:end]) + ','
@@ -452,8 +450,8 @@ def extract_features(label_file):
         #     print ValueError.message
         caikangs.append(caikang[i])
         # data.append(map(lambda x: num(x.strip()), feature.split(',')[:-1]))
-        label = '1' if fl[i].split('\t')[6].strip()=='1' else '0'
-        #label = '0'
+        #label = '1' if fl[i].split('\t')[6].strip()=='1' else '0'
+        label = '0'
         labels.append(label)
         feature += label
         weka_list.append(feature + '\n')
@@ -510,9 +508,9 @@ if __name__ == '__main__':
     my_test(suffix)
     # runSVM()
     # classifyByModule(labelf, suffix)
-    calculate_confusion('svm_test', 'annotation.txt')
-    list_wrong_case('svm_test', 'predict_'+suffix+'.txt')
-    calculate_confusion('svm_test', 'predict_'+suffix+'.txt')
+    #calculate_confusion('svm_test', 'annotation.txt')
+    #list_wrong_case('svm_test', 'predict_'+suffix+'.txt')
+    #calculate_confusion('svm_test', 'predict_'+suffix+'.txt')
 
 
 

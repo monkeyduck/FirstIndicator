@@ -20,6 +20,26 @@ public class FirstIndicator {
 
     private float retention;
 
+    private float retention_3;
+
+    private float retention_7;
+
+    public float getRetention_3() {
+        return retention_3;
+    }
+
+    public void setRetention_3(float retention_3) {
+        this.retention_3 = retention_3;
+    }
+
+    public void setRetention_7(float retention_7) {
+        this.retention_7 = retention_7;
+    }
+
+    public float getRetention_7() {
+        return retention_7;
+    }
+
     public float getRetention() {
         return retention;
     }
@@ -115,6 +135,10 @@ public class FirstIndicator {
                 last.getAvgUsedTimePerUser());
         compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getRetention()-last.getRetention(),last.getRetention());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getRetention_3()-last.getRetention_3(),last.getRetention_3());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getRetention_7()-last.getRetention_7(),last.getRetention_7());
         compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getBugNum()-last.getBugNum(),last.getBugNum());
         compare.add(String.format("%.2f%%", f));
