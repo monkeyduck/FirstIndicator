@@ -41,14 +41,18 @@ def preprocess_tfidf(file):
 def read_thresh():
     thresh_dic = {}
     with codecs.open('thresh.txt', 'r', 'utf-8') as rf:
-
+        fl = rf.readlines()
+        for line in fl:
+            key = line.split(' ')[0]
+            val = float(line.split(' ')[1].strip())
+            thresh_dic[key] = val
+    return thresh_dic
 
 
 def tf_idf(label_file):
     preprocess_tfidf(label_file)
-    window_size = 40
-    step_size = 20
-    threshold = 0.38
+    window_size = 20
+    step_size = 10
     thresh = read_thresh()
     key_map = {}
     dic = {}
@@ -91,8 +95,11 @@ def tf_idf(label_file):
     ignore_words = read_ignore()
     for i in range(len(weight)):  # 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
         for j in range(len(word)):
+            threshold = 0
             if word[j] in thresh.keys():
                 threshold = thresh[word[j]]
+            else:
+                threshold = 0.44
             if float(weight[i][j]) > threshold and word[j] not in ignore_words:
                 member_id = index[i].split(' ')[0]
                 if member_id not in key_map.keys():
@@ -102,8 +109,7 @@ def tf_idf(label_file):
                         key_map[member_id][time]=[]
                     key_map[member_id][time].append(word[j])
                 # repeat_file.write(index[i]+'\t'+word[j]+'\t'+str(weight[i][j])+'\n')
-                print word[j], str(weight[i][j])
-
+                print str(i), word[j], str(weight[i][j])
     return key_map
 
 

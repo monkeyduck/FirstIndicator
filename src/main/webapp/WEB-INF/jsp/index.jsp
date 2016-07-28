@@ -72,6 +72,20 @@
             <p><a class="btn btn-success btn-large" href="<%=basePath%>log/record">Enter</a></p>
         </div>
     </div>
+    <div class="row">
+        <div class="span4">
+            <h2>实时日志</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>websocket/websocket.jsp">Enter</a></p>
+        </div>
+        <div class="span4">
+            <h2>日志下载</h2>
+            <p><a class="btn btn-success btn-large" href="#gi">Enter</a></p>
+        </div>
+        <div class="span4">
+            <h2>待添加</h2>
+            <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
+        </div>
+    </div>
     <hr>
     <footer>
         <p>&copy; linchuan 2016</p>
