@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from confusion import calculate_confusion
 import jieba
+jieba.load_userdict("userdict.txt")
 import os
 import codecs
 import random
@@ -16,7 +17,11 @@ def load_neg_dic():
     fl = dicf.readlines()
     neg_dic = map(lambda w: w.strip(), fl)
     dicf.close()
-    return neg_dic
+    dicf = codecs.open('sensitive.txt', 'r', 'utf-8')
+    fl = dicf.readlines()
+    sensitive_dic = map(lambda w: w.strip(), fl)
+    dicf.close()
+    return neg_dic,sensitive_dic
 
 
 def preprocess_tfidf(file):
@@ -33,11 +38,18 @@ def preprocess_tfidf(file):
     wf.close()
 
 
+def read_thresh():
+    thresh_dic = {}
+    with codecs.open('thresh.txt', 'r', 'utf-8') as rf:
+
+
+
 def tf_idf(label_file):
     preprocess_tfidf(label_file)
     window_size = 40
     step_size = 20
     threshold = 0.38
+    thresh = read_thresh()
     key_map = {}
     dic = {}
     file = 'tf.idf'
@@ -58,13 +70,16 @@ def tf_idf(label_file):
             if info not in dic.keys():
                 dic[info] = []
             if offset+window_size < len(fl):
+                nl = ''
                 for l in fl[offset:offset+window_size]:
                     dic[info].append(l.split('\t')[1])
-                corpus.append(' '.join(map(lambda x: ' '.join(jieba.cut(x.split('\t')[5])),
-                                           fl[offset:offset+window_size])))
+                    nl += ' '.join(jieba.cut(l.split('\t')[5]))
+                corpus.append(nl)
             else:
+                nl = ''
                 for l in fl[offset:]:
                     dic[info].append(l.split('\t')[1])
+                    nl += ' '.join(jieba.cut(l.split('\t')[5]))
                 corpus.append(' '.join(map(lambda x: ' '.join(jieba.cut(x.split('\t')[5])),
                                            fl[offset:])))
     vectorizer = CountVectorizer()  # 该类会将文本中的词语转换为词频矩阵，矩阵元素a[i][j] 表示j词在i类文本下的词频
@@ -76,6 +91,8 @@ def tf_idf(label_file):
     ignore_words = read_ignore()
     for i in range(len(weight)):  # 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
         for j in range(len(word)):
+            if word[j] in thresh.keys():
+                threshold = thresh[word[j]]
             if float(weight[i][j]) > threshold and word[j] not in ignore_words:
                 member_id = index[i].split(' ')[0]
                 if member_id not in key_map.keys():
@@ -85,16 +102,9 @@ def tf_idf(label_file):
                         key_map[member_id][time]=[]
                     key_map[member_id][time].append(word[j])
                 # repeat_file.write(index[i]+'\t'+word[j]+'\t'+str(weight[i][j])+'\n')
-                #print word[j], str(weight[i][j])
+                print word[j], str(weight[i][j])
 
     return key_map
-
-
-# def sentence_repeat(content):
-#     if has_repeat_word(content):
-#         return '1'
-#     else:
-#         return '0'
 
 
 def read_ignore():
@@ -102,6 +112,38 @@ def read_ignore():
         return [x.strip() for x in f.readlines()]
 
 
+# 声音是否有情绪
+
+# 指令是否有情绪
+def has_sensitive_word(cai,line,sen_dic):
+    if cai == '0':
+        return '0'
+    sentence = line.split('\t')[5]
+    for s_word in sen_dic:
+        pattern = re.compile(s_word)
+        match = pattern.match(sentence)
+        if match:
+            return '1'
+    return '0'
+
+
+# 指令前后文重复
+def sensitive_repeat(sentence, sentences, sen_dic):
+    for s_word in sen_dic:
+        pattern = re.compile(s_word)
+        match = pattern.match(sentence)
+        if match:
+            for sen in sentences:
+                sen = sen.split('\t')[5]
+                if sen==sentence:
+                    continue
+                double_match = pattern.match(sen)
+                if double_match:
+                    return '1'
+    return '0'
+
+
+# 一句内的多次重复(比如,关机关机关机)
 def sentence_repeat(sen):
     xiaole = sen.split('\t')[4]
     content = sen.split('\t')[5]
@@ -122,6 +164,7 @@ def sentence_repeat(sen):
     return '0'
 
 
+# 前后文多次重复
 def context_repeat(sentence, keyword_map):
     member_id = sentence.split('\t')[0]
     time = sentence.split('\t')[1]
@@ -133,26 +176,6 @@ def context_repeat(sentence, keyword_map):
                 if keyword in content and keyword not in xiaole_word:
                     return '1'
     return '0'
-
-
-def neg_word_counts(neg_dic, sentences):
-    cnt = 0
-    max_cnt = 2
-    for sen in sentences:
-        sen = sen.split('\t')[5]
-        for neg_word in neg_dic:
-            pattern = re.compile(neg_word)
-            match = pattern.match(sen)
-            if match:
-                cnt += 1
-                break
-        # for seg in jieba.cut(sen.split('\t')[6]):
-        #     if seg in neg_dic:
-        #         cnt += 1
-    if cnt >= max_cnt:
-        return '1'
-    else:
-        return '0'
 
 
 def context_repeat_counts(sentences, keyword_map):
@@ -174,6 +197,7 @@ def context_repeat_counts(sentences, keyword_map):
         return '0'
 
 
+# 一句内的消极情感
 def has_neg_word(neg_dic, sentence):
     features = ''
     sentence = sentence.split('\t')[5]
@@ -181,19 +205,44 @@ def has_neg_word(neg_dic, sentence):
         pattern = re.compile(neg_word)
         match = pattern.match(sentence)
         if match:
-            features += ',1'
-        else:
-            features += ',0'
-        # flag = False
-        # for seg in jieba.cut(sentence):
-        #     if neg_word == seg:
-        #         flag = True
-        #         features += ',1'
-        #         break
-        # if not flag:
-        #     features += ',0'
-    return features[1:]
+            return '1'
+    return '0'
 
+
+# 前后文的消极情感
+def neg_word_counts(neg_dic, sentences):
+    cnt = 0
+    max_cnt = 2
+    for sen in sentences:
+        sen = sen.split('\t')[5]
+        for neg_word in neg_dic:
+            pattern = re.compile(neg_word)
+            match = pattern.match(sen)
+            if match:
+                cnt += 1
+                break
+    if cnt >= max_cnt:
+        return '1'
+    else:
+        return '0'
+
+# 小乐的话是否重复或是否有错误提示或是否被摇晃
+def xiaole_word(lines):
+    sentences = map(lambda x: x.split('\t')[4], lines)
+    cur_sen = sentences[-1]
+    repeat = '0'
+    for i in range(len(lines) - 1):
+        if sentences[i] == cur_sen:
+            return '1'
+    shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
+    shake = '0'
+    for s in shake_sentence:
+        if s in sentences[-1]:
+            return '1'
+    wrong_tip = '0'
+    if 'wrong_tip' in cur_sen:
+        return '1'
+    return '0'
 
 def simple_audio_features(sentence):
     member_id = sentence.split('\t')[0]
@@ -235,22 +284,7 @@ def get_content_length(sentence):
     return str(len(sentence.split('\t')[5].strip())/len(u'一'))
 
 
-def xiaole_word(lines):
-    sentences = map(lambda x: x.split('\t')[4], lines)
-    cur_sen = sentences[-1]
-    repeat = '0'
-    for i in range(len(lines) - 1):
-        if sentences[i] == cur_sen:
-            return '1'
-    #shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
-    #shake = '0'
-    #for s in shake_sentence:
-    #    if s in sentences[-1]:
-    #        return '1'
-    wrong_tip = '0'
-    if 'wrong_tip' in cur_sen:
-        return '1'
-    return '0'
+
 
 
 def add_negative(feature):
@@ -418,7 +452,7 @@ def list_wrong_case(f1, f2):
 
 def extract_features(label_file):
     keyword_map = tf_idf(label_file)
-    neg_dic = load_neg_dic()
+    neg_dic,sen_dic = load_neg_dic()
     f = codecs.open(label_file, 'r', 'utf-8')
     fl = f.readlines()
     f.close()
@@ -434,14 +468,36 @@ def extract_features(label_file):
         start = i - related_numbers if i>=related_numbers else 0
         end = i + related_numbers+1 if i+related_numbers < len(fl) else len(fl)
         feature = ''
+
+        # 1声音是否有情绪
         feature += caikang[i] + ','
+
+        # 2指令是否有情绪
+        feature += has_sensitive_word(caikang[i],fl[i],sen_dic)+','
+
+        # 3指令前后文重复
+        feature += sensitive_repeat(fl[i].split('\t')[5],fl[start:end],sen_dic) + ','
+
+        # 4一句内的多次重复(比如,关机关机关机)
         feature += sentence_repeat(fl[i]) + ','
+
+        # 5前后文多次重复
         feature += context_repeat(fl[i], keyword_map) + ','
-        feature += context_repeat_counts(fl[start:end], keyword_map) + ','
-        feature += neg_word_counts(neg_dic, fl[start:end]) + ','
-        feature += xiaole_word(fl[start:i+1])+','
+        #feature += context_repeat_counts(fl[start:end], keyword_map) + ','
+
+        # 6一句内的消极情感
         feature += has_neg_word(neg_dic, fl[i]) + ','
-        feature += get_content_length(fl[i]) + ','
+
+        # 7前后文的消极情感
+        feature += neg_word_counts(neg_dic, fl[start:end]) + ','
+
+        # 8小乐的话是否重复或是否有错误提示或是否被摇晃
+        feature += xiaole_word(fl[start:i+1])+','
+
+        # 9文本长度
+        #feature += get_content_length(fl[i]) + ','
+
+        feature += fl[i].split('\t')[5].strip().split(' ')[0]+','
         # try:
         #     audio = audio_context_features(fl[start:end])
         #     feature += audio+','
@@ -454,9 +510,9 @@ def extract_features(label_file):
         label = '0'
         labels.append(label)
         feature += label
-        weka_list.append(feature + '\n')
+        #weka_list.append(feature + '\n')
         svm_list.append(convert2svm(feature))
-        maxent_list.append(writeIntoMaxent(feature))
+        #maxent_list.append(writeIntoMaxent(feature))
     # pca = my_PCA(data)
     # create_pca_arff(pca, caikangs, labels)
     shuffle = range(len(labels))
@@ -465,9 +521,9 @@ def extract_features(label_file):
     svm_shuffle = []
     maxent_shuffle = []
     for i in range(len(labels)):
-        weka_shuffle.append(weka_list[shuffle[i]])
+        #weka_shuffle.append(weka_list[shuffle[i]])
         svm_shuffle.append(svm_list[shuffle[i]])
-        maxent_shuffle.append(maxent_list[shuffle[i]])
+        #maxent_shuffle.append(maxent_list[shuffle[i]])
     #write_maxent(maxent_shuffle)
 
     # 乱序,用来生成训练集和验证集
@@ -482,22 +538,23 @@ def my_test(suffix):
     max_cnt = 2
     with codecs.open('svm_test', 'r', 'utf-8') as f:
         fl = f.readlines()
+
         for line in fl:
             cnt = 0
             feas = line.strip().split(' ')[1:-1]
-            length = int(line.strip().split(' ')[len(line.strip().split(' '))-1].split(':')[1])
-            cai_audio = feas[0].split(':')[1]
+            #length = int(line.strip().split(' ')[len(line.strip().split(' '))-1].split(':')[1])
+            #cai_audio = feas[0].split(':')[1]
             # if length <= 2 and cai_audio=='1':
             #     wf.write('1\n')
             #     continue
             for feature in feas:
                 if feature.split(':')[1]=='1':
                     cnt += 1
-                    if cnt == max_cnt:
-                        wf.write('1\n')
-                        break
-            if cnt != max_cnt:
-                wf.write('0\n')
+
+            if cnt >= max_cnt:
+                wf.write('1\t'+line)
+            else:
+                wf.write('0\t'+line)
     wf.close()
 
 

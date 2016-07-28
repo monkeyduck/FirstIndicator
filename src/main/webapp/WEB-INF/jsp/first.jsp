@@ -33,7 +33,7 @@
             <%--});--%>
         <%--});--%>
     <%--</script>--%>
-    <title>First Indicators</title>
+    <title>一级指标</title>
     <link type="text/css" href='<c:url value="/resources/bootstrap-table/bootstrap-table.css"></c:url>' rel="stylesheet" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Example of Fixed Layout with Bootstrap version 2.0 from ziqiangxuetang.com">
@@ -233,13 +233,15 @@
                 data:[label]
             },
             xAxis: {
+                type:"category",
                 data: xaxis
             },
             yAxis: {},
             series: [{
                 name: '',
                 type: 'line',
-                data: showData
+                data: showData,
+
             }]
         };
 
