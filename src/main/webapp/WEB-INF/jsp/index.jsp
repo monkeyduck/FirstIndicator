@@ -72,7 +72,7 @@
             <p><a class="btn btn-success btn-large" href="<%=basePath%>log/record">Enter</a></p>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top: 100px">
         <div class="span4">
             <h2>实时日志</h2>
             <p><a class="btn btn-success btn-large" href="<%=basePath%>websocket/websocket.jsp">Enter</a></p>
