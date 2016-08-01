@@ -61,22 +61,12 @@
                     </tr>
                 </table>
             </form>
-            <%--<form>--%>
-                <%--<input id="lefile" type="file" style="display:none">--%>
-                <%--<div class="input-append">--%>
-                    <%--<label class="control-label">Select File</label>--%>
-                    <%--<input id="input-1" type="file" class="file">--%>
-                    <%--&lt;%&ndash;<input id="file_upload" class="input-large" type="text" style="height:30px;">&ndash;%&gt;--%>
-                    <%--&lt;%&ndash;<a class="btn" onclick="$('input[id=lefile]').click();">Browse</a>&ndash;%&gt;--%>
-                <%--</div>--%>
-                <%--<button class="btn btn-success" id="btn_upload" onclick="analyse()">分析</button>--%>
-            <%--</form>--%>
         </div>
     </div>
     <div class="row">
         <div class="span2">
             <h2>result</h2>
-    <textarea class="text-left" rows="15" cols="60" th:text="${message}">
+    <textarea class="text-left" rows="15" cols="60">
             ${message}
     </textarea>
         </div>
@@ -87,12 +77,22 @@
         </div>
     </div>
 </div>
-
-<%--<div id="zhongxin" style="width: 1000px;margin-top: 20%;margin-left: auto;margin-right: auto"--%>
-     <%--class="panel panel-default"></div>--%>
-
-<%--<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img--%>
-        <%--src="static/images/jiazai.gif"/><br/><h4 class="lighter block green">提交中...</h4></div>--%>
+<div class="container">
+    <div class="row">
+        <form method="POST" enctype="multipart/form-data" action="<%=basePath%>log/analyseAudio">
+            <table class="table">
+                <tr>
+                    <td>file:</td>
+                    <td><input type="file" name="file" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" class="btn-success" value="Upload" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
 
 
 
@@ -118,18 +118,6 @@
     function analyse() {
         loading(true)
         var formData = new FormData($('form#uploadform')[0]);
-//        $.ajax({
-//            url: '/log/check',
-//            type: 'POST',
-//            data: formData,
-//            success: function (data) {
-//                loading(false)
-//                alert(data);
-//            },
-//            cache: false,
-//            contentType: false,
-//            processData: false
-//        })
     }
     $('form#uploadform').submit(function () {
         var formData = new FormData($(this)[0]);

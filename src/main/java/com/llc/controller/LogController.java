@@ -204,7 +204,7 @@ public class LogController {
         MainLabel mainLabel = new MainLabel();
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createNewLabel();
-        mv.setViewName("analyseAudio");
+        mv.setViewName("analyseLog");
 
         String basePath = "/home/llc/LogAnalysis/emotion/";
         String targetName = "audio.txt";

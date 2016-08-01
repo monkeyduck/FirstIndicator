@@ -82,7 +82,7 @@
             <p><a class="btn btn-success btn-large" href="#gi">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>待添加</h2>
+            <h2></h2>
             <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
         </div>
     </div>

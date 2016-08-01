@@ -1,11 +1,9 @@
 package com.caikang.com.pitch;
 
-import com.aliyun.oss.OSSClient;
 import com.caikang.com.rule.GetLoudnessSeq;
 import com.caikang.com.utils.HttpTookit;
 import com.caikang.com.utils.OSSHelper;
 import com.pitch.EmotionDiagram;
-import com.snr.NoiseEstimation;
 import com.tester.Diagram;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
