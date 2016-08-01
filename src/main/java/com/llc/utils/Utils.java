@@ -26,28 +26,6 @@ public class Utils {
     public static final String logstore = "logstore"; // 上面步骤创建的日志库名称
 
     public static File convert(MultipartFile file) throws IOException {
-//        try{
-//            String name = file.getOriginalFilename();
-//            logger.info("Upload file name: "+name);
-//            File readFile = new File(name);
-//            logger.info("open file: "+name);
-//            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(readFile));
-//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//            String line = bufferedReader.readLine();
-//            logger.info("Original sentence: "+line);
-//            bufferedReader.close();
-//            inputStreamReader.close();
-//            BufferedOutputStream stream = new BufferedOutputStream(
-//                    new FileOutputStream(new File(name)));
-//            FileCopyUtils.copy(file.getInputStream(), stream);
-//            stream.close();
-//            File inputFile = new File(name);
-//            return inputFile;
-//        }catch (Exception e){
-//            logger.error(e.getMessage());
-//        }
-//        return null;
-////        return inputFile;
         File convFile = new File(file.getOriginalFilename());
         boolean b = convFile.createNewFile();
         if (!b) {

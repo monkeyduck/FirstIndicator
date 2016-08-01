@@ -153,6 +153,7 @@ public class LogController {
 
         File file = Utils.convert(multipartFile);
         Utils.writeToTxt(file);
+
         DateTime datetime = new DateTime();
         String dateSuffix = datetime.toString("yyyyMMddhhmmss");
 
@@ -160,6 +161,7 @@ public class LogController {
         mainLabel.downloadAllAudioWav(file);
         mainLabel.createAudioLabel();
         mainLabel.runPython(dateSuffix);
+        file.delete();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("analyseLog");
@@ -193,5 +195,23 @@ public class LogController {
         return modelAndView;
     }
 
+    @RequestMapping(value="/analyseAudio", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+    public ModelAndView analyseAudio(@RequestParam("file")MultipartFile multipartFile,
+                                     HttpServletResponse response) throws
+            IOException, InterruptedException {
+        ModelAndView mv = new ModelAndView();
+        File file = Utils.convert(multipartFile);
+        MainLabel mainLabel = new MainLabel();
+        mainLabel.downloadAllAudioWav(file);
+        mainLabel.createNewLabel();
+        mv.setViewName("analyseAudio");
 
-}
+        String basePath = "/home/llc/LogAnalysis/emotion/";
+        String targetName = "audio.txt";
+        DownloadFileUtil.pushFile(targetName, basePath + targetName, response);
+        return mv;
+    }
+
+
+
+    }

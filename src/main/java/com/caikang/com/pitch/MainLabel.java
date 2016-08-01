@@ -4,13 +4,18 @@ import com.aliyun.oss.OSSClient;
 import com.caikang.com.rule.GetLoudnessSeq;
 import com.caikang.com.utils.HttpTookit;
 import com.caikang.com.utils.OSSHelper;
+import com.pitch.EmotionDiagram;
+import com.snr.NoiseEstimation;
+import com.tester.Diagram;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainLabel {
 	private ArrayList<String> lines;
@@ -103,6 +108,7 @@ public class MainLabel {
         FileWriter fileWriter = new FileWriter(file);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (String audioRecord: audioList){
+//            int label = EmotionDiagram.get
             int label = getLabel(audioRecord);
 //            String emoRe = getEmokitLabel(audioRecord);
             labelList.add(label);
@@ -112,6 +118,19 @@ public class MainLabel {
         fileWriter.close();
 		return labelList;
 	}
+
+    public void createNewLabel() throws IOException {
+        List<String> result = new ArrayList<String>();
+        File file = new File("/home/llc/LogAnalysis/emotion/audio.txt");
+        for (String audioRecord: audioList){
+            int label = EmotionDiagram.getLabel(audioRecord);
+            String str = ""+label+"\t";
+            label = Diagram.getOutput(audioRecord);
+            str += label;
+            result.add(str);
+        }
+        FileUtils.writeLines(file, result);
+    }
 
     public void runPython(String suffix) throws IOException, InterruptedException {
         try{

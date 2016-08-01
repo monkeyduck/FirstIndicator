@@ -237,6 +237,17 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.1</version>
         </dependency>
+        <!--蔡康音频分析包-->
+        <dependency>
+            <groupId>ana</groupId>
+            <artifactId>emotion</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ana</groupId>
+            <artifactId>noise</artifactId>
+            <version>1.0</version>
+        </dependency>
 
 
 

@@ -99,7 +99,7 @@ def tf_idf(label_file):
             if word[j] in thresh.keys():
                 threshold = thresh[word[j]]
             else:
-                threshold = 0.44
+                threshold = 0.5
             if float(weight[i][j]) > threshold and word[j] not in ignore_words:
                 member_id = index[i].split(' ')[0]
                 if member_id not in key_map.keys():
