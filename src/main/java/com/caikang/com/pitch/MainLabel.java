@@ -3,7 +3,7 @@ package com.caikang.com.pitch;
 import com.caikang.com.rule.GetLoudnessSeq;
 import com.caikang.com.utils.HttpTookit;
 import com.caikang.com.utils.OSSHelper;
-import com.pitch.EmotionDiagram;
+import com.emotion.pitch.EmotionDiagram;
 import com.tester.Diagram;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
@@ -121,11 +121,16 @@ public class MainLabel {
         List<String> result = new ArrayList<String>();
         File file = new File("/home/llc/LogAnalysis/emotion/audio.txt");
         for (String audioRecord: audioList){
-            int label = EmotionDiagram.getLabel(audioRecord);
-            String str = ""+label+"\t";
-            label = Diagram.getOutput(audioRecord);
-            str += label;
-            result.add(str);
+            try{
+                int label = EmotionDiagram.getLabel(audioRecord);
+                String str = ""+label+"\t";
+                label = Diagram.getOutput(audioRecord);
+                str += label;
+                result.add(str);
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
+
         }
         FileUtils.writeLines(file, result);
     }
