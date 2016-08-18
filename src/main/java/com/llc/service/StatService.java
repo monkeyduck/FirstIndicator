@@ -22,4 +22,8 @@ public interface StatService {
 
     List<FirstIndicator> getStatisticByVersionByDate(String version);
 
+    List<FirstIndicator> getStatisticByUserType(String userType);
+
+    List<FirstIndicator> getStatisticByUserTypeByDate(String userType);
+
 }

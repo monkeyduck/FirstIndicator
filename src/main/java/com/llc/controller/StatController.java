@@ -13,7 +13,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by llc on 16/7/12.
@@ -23,6 +25,18 @@ import java.util.List;
 public class StatController {
     @Resource(name="StatService")
     private StatService statService;
+
+    private static List<String> userTypes = new ArrayList<String>();
+
+    private static Map<String, String> userTypeName = new HashMap<String, String>();
+    static{
+        userTypes.add("realUser");
+        userTypes.add("indoors");
+        userTypes.add("innerTest");
+        userTypeName.put("realUser", "真实用户");
+        userTypeName.put("indoors", "入户用户");
+        userTypeName.put("innerTest", "内部测试");
+    }
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);
 
@@ -45,6 +59,8 @@ public class StatController {
         List<List<String>> chartData = getChartData(indicators);
         modelAndView.addObject("firstStatList", indicators);
         modelAndView.addObject("versionList", versions);
+        modelAndView.addObject("userTypeList", userTypes);
+        modelAndView.addObject("typeName", userTypeName);
         modelAndView.addObject("chartData", chartData);
         modelAndView.addObject("compare", compare);
         modelAndView.addObject("type", type);
@@ -99,6 +115,41 @@ public class StatController {
         mv.addObject("firstStatList", indicators);
         mv.addObject("versionList", versions);
         mv.addObject("ver", version);
+        mv.addObject("compare", compare);
+        mv.addObject("type", type);
+        mv.setViewName("first");
+        return mv;
+    }
+
+    @RequestMapping("/userType")
+    public ModelAndView displayByUserType(@RequestParam(value = "userType") String userType,
+                                          @RequestParam(value = "type") String type){
+        ModelAndView mv = new ModelAndView();
+        List<FirstIndicator> indicators;
+        if (userType.equals("all")){
+            if (type.equals("date")){
+                indicators = statService.getStatisticByDate();
+            }else{
+                indicators = statService.getStatistic();
+            }
+        }
+        else{
+            if (type.equals("date")){
+                indicators = statService.getStatisticByUserTypeByDate(userType);
+            }
+            else{
+                indicators = statService.getStatisticByUserType(userType);
+            }
+        }
+
+        List<List<String>> chartData = getChartData(indicators);
+        List<String> compare = calCompare(type, indicators);
+
+        mv.addObject("chartData", chartData);
+        mv.addObject("firstStatList", indicators);
+        mv.addObject("userTypeList", userTypes);
+        mv.addObject("typeName", userTypeName);
+        mv.addObject("utype", userType);
         mv.addObject("compare", compare);
         mv.addObject("type", type);
         mv.setViewName("first");

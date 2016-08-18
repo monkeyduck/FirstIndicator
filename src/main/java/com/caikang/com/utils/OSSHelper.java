@@ -5,8 +5,10 @@ import com.aliyun.oss.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -55,7 +57,36 @@ public class OSSHelper {
                 logger.error(e.getMessage());
             }
         }
-        logger.info(key+" has existed.");
+        else{
+            logger.info(key+" has existed.");
+        }
+
+    }
+
+    public static void main(String args[]){
+        String externalEndpoint =  "http://oss-cn-beijing.aliyuncs.com";
+        OSSClient client = new OSSClient(externalEndpoint, accessKeyId, accessKeySecret);
+        String key = "11ff924ae966460ca36c97a44192b2270.56092095/2016-08-06-07-23-19-user.wav";
+        String filename = "11ff924ae966460ca36c97a44192b2270.56092095-2016-08-06-07-23-19-user.wav";
+        System.out.println(client.doesObjectExist(bucketName,key));
+        File wavfile = new File("/Users/linchuan/"+filename);
+//        OSSObject object = client.getObject(bucketName, filename);
+        client.getObject(new GetObjectRequest(bucketName, key), wavfile);
+
+//        try{
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(object.getObjectContent()));
+//            while (true) {
+//                String line = reader.readLine();
+//                if (line == null) break;
+//                System.out.println("\n" + line);
+//            }
+//            reader.close();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+
+//        client.getObject(new GetObjectRequest(bucketName, filename), wavfile);
+        System.out.println("Finished downloading wav: "+filename);
 
     }
 

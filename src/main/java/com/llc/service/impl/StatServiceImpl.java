@@ -41,4 +41,13 @@ public class StatServiceImpl implements StatService{
         return this.statDao.getStatisticByVersionByDate(version);
     }
 
+    public List<FirstIndicator> getStatisticByUserType(String userType){
+        return this.statDao.getStatisticByUserType(userType);
+    }
+
+    public List<FirstIndicator> getStatisticByUserTypeByDate(String userType){
+        return this.statDao.getStatisticByUserTypeByDate(userType);
+    }
+
+
 }

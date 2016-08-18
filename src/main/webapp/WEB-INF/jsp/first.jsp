@@ -82,7 +82,20 @@
         </select>
 
         <div style="float: left">
-            <button class="btn" id="button_version" onclick="displayByVersion()">筛选</button>
+            <button class="btn" id="button_version" onclick="displayByVersion()">按版本筛选</button>
+        </div>
+
+        <div style="float: left">
+            <select style="float:left" class="selectpicker" id="userTypeSelect" style="width: 20px">
+                <option value="all">全部用户</option>
+                <c:forEach items="${userTypeList}" var="userType">
+                    <option value="${userType}" <c:if test="${userType eq utype}">selected="selected"</c:if> >${typeName[userType]}</option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <div style="float: left">
+            <button class="btn" id="button_usertype" onclick="displayByUserType()">按用户筛选</button>
         </div>
 
         <div style="float: right">
@@ -199,20 +212,21 @@
 </body>
 <script type="text/javascript">
     function displayByDate() {
-        var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?&type=date&version='+version;
-//        document.getElementById("button_date").style.display = 'none';
-//        document.getElementById("button_hour").style.display = 'block';
+        var userType = document.getElementById("userTypeSelect").value;
+        window.location.href = '<%=basePath%>stat/userType?&type=date&userType='+userType;
     }
     function displayByHour() {
-        var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?type=hour&version='+version;
-//        document.getElementById("button_date").style.display = 'block';
-//        document.getElementById("button_hour").style.display = 'none';
+        var userType = document.getElementById("userTypeSelect").value;
+        window.location.href = '<%=basePath%>stat/userType?type=hour&userType='+userType;
     }
     function displayByVersion() {
         var version = document.getElementById("versionSelect").value;
         window.location.href = '<%=basePath%>stat/version?version='+version+'&type=time';
+    }
+
+    function displayByUserType() {
+        var userType = document.getElementById("userTypeSelect").value;
+        window.location.href = '<%=basePath%>stat/userType?userType='+userType+'&type=time';
     }
     function chart(index){
         // 基于准备好的dom，初始化echarts实例

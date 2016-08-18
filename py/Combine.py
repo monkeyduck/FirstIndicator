@@ -149,6 +149,10 @@ def sensitive_repeat(sentence, sentences, sen_dic):
     return '0'
 
 
+def is_Chinese(word):
+    return word >= u'\u4e00' and word<=u'\u9fa5'
+
+
 # 一句内的多次重复(比如,关机关机关机)
 def sentence_repeat(sen):
     xiaole = sen.split('\t')[4]
@@ -159,10 +163,11 @@ def sentence_repeat(sen):
     ignore_words = read_ignore()
     word_map = {}
     for word in content:
-        if word not in word_map.keys():
-            word_map[word] = 1
-        else:
-            word_map[word] += 1
+        if is_Chinese(word):
+            if word not in word_map.keys():
+                word_map[word] = 1
+            else:
+                word_map[word] += 1
 
     for word in word_map.keys():
         if word_map[word] >= repeat_times and len(word)>=2 and word not in xiaole:
@@ -237,8 +242,9 @@ def xiaole_word(lines):
     sentences = map(lambda x: x.split('\t')[4], lines)
     cur_sen = sentences[-1]
     repeat = '0'
-    for i in range(len(lines) - 1):
-        if sentences[i] == cur_sen:
+    last = len(lines)-2
+    if last>0:
+        if sentences[last] == cur_sen:
             return '1'
     shake_sentence = [u'我快被摇晕了', u'救命啊!晃得我好晕啊', u'倒着不舒服,我都看不到你的脸了', ]
     shake = '0'

@@ -163,7 +163,7 @@ public class PitchEstimation {
 		isSalient_15 = func_isSalient(list, 12, 90);
 		if(speechcount == 0)
 			angryScore = 0;
-		else if(angryfreqratio >= 0.27) {
+		else if(angryfreqratio >= 0.32) {
 			angryScore = 1.0;
 		}
 	}

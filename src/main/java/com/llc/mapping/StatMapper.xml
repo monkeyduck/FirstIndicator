@@ -39,7 +39,15 @@
         where version=#{version} and displayTime like '%23:00:00%' ORDER BY displayTime DESC limit 0,15)
         AS TMPTable ORDER BY displayTime
     </select>
-    <!--<select id="getChartData" resultMap="FirstIndicatorMap" parameterType="java.lang.String">-->
-        <!--SELECT displayTime,#{column} from -->
-    <!--</select>-->
+    <select id="getStatisticByUserType" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_usertype
+        where usertype=#{userType} ORDER BY displayTime DESC limit 0,49) AS TMPTable ORDER BY displayTime
+    </select>
+
+    <select id="getStatisticByUserTypeByDate" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_usertype
+        where usertype=#{userType} and displayTime like '%23:00:00%' ORDER BY displayTime DESC limit 0,15)
+        AS TMPTable ORDER BY displayTime
+    </select>
+
 </mapper>

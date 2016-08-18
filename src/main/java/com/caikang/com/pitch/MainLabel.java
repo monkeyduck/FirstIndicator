@@ -19,13 +19,11 @@ public class MainLabel {
 	private ArrayList<String> lines;
 	private ArrayList<String> audioList;
     private ArrayList<String> audioKeyList;
-    private OSSHelper ossHelper;
     private static final Logger logger = LoggerFactory.getLogger(MainLabel.class);
 
     public MainLabel(){
         lines = new ArrayList<String>();
         audioList = new ArrayList<String>();
-        ossHelper = new OSSHelper();
         audioKeyList = new ArrayList<String>();
     }
 
@@ -40,7 +38,7 @@ public class MainLabel {
 			byte[] buffer = Arrays.copyOfRange(temp, 44, temp.length);
 			PitchEstimation.process(buffer);
 			GetLoudnessSeq.process(buffer, buffer.length, PitchEstimation.getPoint());
-			if(PitchEstimation.angryScore >= 1.0 && GetLoudnessSeq.getLoudnessmax() >= 2.5)
+			if(PitchEstimation.angryScore >= 1.0 && GetLoudnessSeq.getLoudnessmax() >= 3.0)
 				label = 1;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -66,24 +64,35 @@ public class MainLabel {
 //	public static void main(String args[]) throws IOException {
 //		createAudioLabel();
 //    }
-    public boolean downloadAudioWavBatch(){
-        try{
-            for (String audioKey:audioKeyList){
-                // It should be asynchronous
-                ossHelper.download(audioKey);
-            }
-            ossHelper.getOssClient().shutdown();
-
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            return true;
+    public void downloadAudioWavBatch(){
+        int idx = 0;
+        int maxS = 50;
+        List<List<String>> multiThreadList = new ArrayList<List<String>>();
+        for (int i=0;i<maxS;++i){
+            multiThreadList.add(new ArrayList<String>());
         }
-        return true;
+        for (String audioKey: audioKeyList){
+            multiThreadList.get(idx%maxS).add(audioKey);
+            ++idx;
+        }
+        for (List<String> l: multiThreadList) {
+            Thread thread = new Thread(() -> {
+                OSSHelper oss = new OSSHelper();
+                l.stream().forEach(s -> {
+                    try {
+                        oss.download(s);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                    }
+                });
+//                oss.getOssClient().shutdown();
+            });
+            thread.run();
+        }
     }
 
 	public void downloadAllAudioWav(File rfile) throws IOException{
-		lines = new ArrayList<String>();
+        logger.info("Start to download audios...");
 		InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(rfile));
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 		String line = "";
@@ -96,22 +105,28 @@ public class MainLabel {
             audioKeyList.add(mem_id+"@"+record_id);
 			audioList.add(audioPath);
 		}
-        while(!downloadAudioWavBatch());
-	}
+        downloadAudioWavBatch();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+        }
+        logger.info("Finished downloading audios");
+    }
 
 	public ArrayList<Integer> createAudioLabel() throws IOException{
+        logger.info("Start to create audio label");
         ArrayList<Integer> labelList = new ArrayList<Integer>();
         File file = new File("/home/llc/LogAnalysis/py/annotation.txt");
         file.createNewFile();
         FileWriter fileWriter = new FileWriter(file);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (String audioRecord: audioList){
-//            int label = EmotionDiagram.get
             int label = getLabel(audioRecord);
-//            String emoRe = getEmokitLabel(audioRecord);
             labelList.add(label);
             bufferedWriter.write(""+label+"\n");
         }
+        logger.info("Finished creating audio labels");
         bufferedWriter.close();
         fileWriter.close();
 		return labelList;
@@ -120,6 +135,7 @@ public class MainLabel {
     public void createNewLabel() throws IOException {
         List<String> result = new ArrayList<String>();
         File file = new File("/home/llc/LogAnalysis/emotion/audio.txt");
+        logger.info("Start to analyse audio...");
         for (String audioRecord: audioList){
             try{
                 int label = EmotionDiagram.getLabel(audioRecord);
@@ -132,6 +148,7 @@ public class MainLabel {
             }
 
         }
+        logger.info("Finished analysing audio");
         FileUtils.writeLines(file, result);
     }
 
