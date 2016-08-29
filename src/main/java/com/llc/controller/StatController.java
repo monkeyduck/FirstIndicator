@@ -30,12 +30,8 @@ public class StatController {
 
     private static Map<String, String> userTypeName = new HashMap<String, String>();
     static{
-        userTypes.add("realUser");
-        userTypes.add("indoors");
-        userTypes.add("innerTest");
-        userTypeName.put("realUser", "真实用户");
-        userTypeName.put("indoors", "入户用户");
-        userTypeName.put("innerTest", "内部测试");
+        userTypes.add("real");
+        userTypeName.put("real", "真实用户");
     }
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);

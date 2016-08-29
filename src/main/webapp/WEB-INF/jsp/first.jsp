@@ -81,22 +81,22 @@
             </c:forEach>
         </select>
 
-        <div style="float: left">
-            <button class="btn" id="button_version" onclick="displayByVersion()">按版本筛选</button>
-        </div>
+        <%--<div style="float: left">--%>
+            <%--<button class="btn" id="button_version" onclick="displayByVersion()">按版本筛选</button>--%>
+        <%--</div>--%>
 
-        <div style="float: left">
-            <select style="float:left" class="selectpicker" id="userTypeSelect" style="width: 20px">
-                <option value="all">全部用户</option>
-                <c:forEach items="${userTypeList}" var="userType">
-                    <option value="${userType}" <c:if test="${userType eq utype}">selected="selected"</c:if> >${typeName[userType]}</option>
-                </c:forEach>
-            </select>
-        </div>
+        <%--<div style="float: left">--%>
+            <%--<select style="float:left" class="selectpicker" id="userTypeSelect" style="width: 20px">--%>
+                <%--<option value="all">真实用户</option>--%>
+                <%--<c:forEach items="${userTypeList}" var="userType">--%>
+                    <%--<option value="${userType}" <c:if test="${userType eq utype}">selected="selected"</c:if> >${typeName[userType]}</option>--%>
+                <%--</c:forEach>--%>
+            <%--</select>--%>
+        <%--</div>--%>
 
-        <div style="float: left">
-            <button class="btn" id="button_usertype" onclick="displayByUserType()">按用户筛选</button>
-        </div>
+        <%--<div style="float: left">--%>
+            <%--<button class="btn" id="button_usertype" onclick="displayByUserType()">按用户筛选</button>--%>
+        <%--</div>--%>
 
         <div style="float: right">
             <label style="padding-right: 10px">
@@ -212,22 +212,22 @@
 </body>
 <script type="text/javascript">
     function displayByDate() {
-        var userType = document.getElementById("userTypeSelect").value;
-        window.location.href = '<%=basePath%>stat/userType?&type=date&userType='+userType;
+        var version = document.getElementById("versionSelect").value;
+        window.location.href = '<%=basePath%>stat/version?version='+version+'&type=date';
     }
     function displayByHour() {
-        var userType = document.getElementById("userTypeSelect").value;
-        window.location.href = '<%=basePath%>stat/userType?type=hour&userType='+userType;
-    }
-    function displayByVersion() {
         var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?version='+version+'&type=time';
+        window.location.href = '<%=basePath%>stat/version?type=hour&version='+version;
     }
+    <%--function displayByVersion() {--%>
+        <%--var version = document.getElementById("versionSelect").value;--%>
+        <%--window.location.href = '<%=basePath%>stat/version?version='+version+'&type=time';--%>
+    <%--}--%>
 
-    function displayByUserType() {
-        var userType = document.getElementById("userTypeSelect").value;
-        window.location.href = '<%=basePath%>stat/userType?userType='+userType+'&type=time';
-    }
+    <%--function displayByUserType() {--%>
+        <%--var userType = document.getElementById("userTypeSelect").value;--%>
+        <%--window.location.href = '<%=basePath%>stat/userType?userType='+userType+'&type=time';--%>
+    <%--}--%>
     function chart(index){
         // 基于准备好的dom，初始化echarts实例
         var title_list = ['总用户数', '日新增用户数', '日活跃', '人均使用时长', '1日留存率', '3日留存率', '7日留存率','bug数'];

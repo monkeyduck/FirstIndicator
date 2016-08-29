@@ -9,6 +9,7 @@
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+    String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/";
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -75,15 +76,15 @@
     <div class="row" style="margin-top: 100px">
         <div class="span4">
             <h2>实时日志</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>websocket/websocket.jsp">Enter</a></p>
+            <p><a class="btn btn-success btn-large" href="<%=serverPath%>websocket/websocket.jsp">Enter</a></p>
         </div>
         <div class="span4">
             <h2>日志下载</h2>
             <p><a class="btn btn-success btn-large" href="#gi">Enter</a></p>
         </div>
         <div class="span4">
-            <h2></h2>
-            <p><a class="btn btn-success btn-large" href="#">Enter</a></p>
+            <h2>给王萌</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/wangmengDownload">Enter</a></p>
         </div>
     </div>
     <hr>
