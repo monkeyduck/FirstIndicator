@@ -114,7 +114,7 @@ def tf_idf(label_file):
                         key_map[member_id][time]=[]
                     key_map[member_id][time].append(word[j])
                 # repeat_file.write(index[i]+'\t'+word[j]+'\t'+str(weight[i][j])+'\n')
-                # print str(i), word[j], str(weight[i][j])
+                print str(i), word[j], str(weight[i][j])
     return key_map
 
 
@@ -315,11 +315,11 @@ def extract_features(label_file):
         feature += context_repeat_counts(fl[start:i], keyword_map) + ','
         # 7一句内的消极情感
         feature += has_neg_word(neg_dic, fl[i]) + ','
-        # 8上文消极情感词
+        # 8上文(包含该句)消极情感词
         feature += neg_word_counts(neg_dic, fl[start:i+1]) + ','
         # 9小乐的话是否重复或是否有错误提示或是否被摇晃
         feature += xiaole_word(fl[start:i+1])+','
-        #10连续两次点播资源或命令
+        # 10连续两次点播资源或命令
         feature += repeat_order(command_dic, fl[start:i+1]) + ','
 
         feature += fl[i].split('\t')[5].strip().split(' ')[0]+','
@@ -371,7 +371,7 @@ def my_test(suffix):
                                 if label[i+k]=='0':
                                     label[i+k]='1'
         for i in range(len(label)):
-            wf.write(label[i]+'\n')
+            wf.write(label[i]+'\t'+fl[i])
     wf.close()
 
 

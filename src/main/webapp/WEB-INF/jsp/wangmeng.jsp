@@ -1,36 +1,40 @@
 <%--
   Created by IntelliJ IDEA.
   User: llc
-  Date: 16/7/7
-  Time: 上午10:23
+  Date: 16/7/14
+  Time: 下午5:39
   To change this template use File | Settings | File Templates.
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page import="com.llc.model.FirstIndicator" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-    String serverPath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/";
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Log System</title>
+    <title>每日日志分析下载</title>
+
+
+    <link type="text/css" href='<c:url value="/resources/bootstrap-table/bootstrap-table.css"></c:url>' rel="stylesheet" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Example of Fixed Layout with Bootstrap version 2.0 from ziqiangxuetang.com">
-    <meta name="author" content="">
     <!-- Le styles -->
     <link type="text/css" href='<c:url value="/resources/bootstrap/css/bootstrap.css"></c:url>' rel="stylesheet"/>
     <link type="text/css" href='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/css/example-fluid-layout.css"></c:url>' rel="stylesheet"/>
-    <%--<link href="../bootstrap/twitter-bootstrap-v2/docs/assets/css/example-fixed-layout.css" rel="stylesheet">--%>
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -43,7 +47,7 @@
             </a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a href="<%=basePath%>log/index">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -53,49 +57,28 @@
 </div>
 <div class="container">
     <!-- Main hero unit for a primary marketing message or call to action -->
-    <div class="leaderboard">
-        <h1>Welcome to Log System</h1>
-        <p>You can analyse, download and search logs here</p>
-        <%--<p><a class="btn btn-success btn-large">Sign Up for a 30 day free trial</a></p>--%>
+    <div class="text-center" style="margin-bottom: 8px">
+        <h2>日志解析下载</h2>
     </div>
-    <!-- Example row of columns -->
-    <div class="row">
-        <div class="span4">
-            <h2>日志分析</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/analyseLog">Enter</a></p>
-        </div>
-        <div class="span4">
-            <h2>一级指标统计</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/first">Enter</a></p>
-        </div>
-        <div class="span4">
-            <h2>音频情绪分析</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/record">Enter</a></p>
-        </div>
+
+    <div style="float: left">
+        <input type="text" class="text-left" name="date" id="date"/>
     </div>
-    <div class="row" style="margin-top: 100px">
-        <div class="span4">
-            <h2>实时日志</h2>
-            <p><a class="btn btn-success btn-large" href="<%=serverPath%>websocket/websocket.jsp">Enter</a></p>
-        </div>
-        <div class="span4">
-            <h2>日志下载</h2>
-            <p><a class="btn btn-success btn-large" href="#gi">Enter</a></p>
-        </div>
-        <div class="span4">
-            <h2>给王萌</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/wangmeng">Enter</a></p>
-        </div>
+
+    <div style="float: left">
+        <button class="btn btn-default" id="button_hour" onclick="download()">王萌点</button>
     </div>
-    <hr>
-    <footer>
-        <p>&copy; linchuan 2016</p>
-    </footer>
-</div> <!-- /container -->
+
+</div>
+<!-- /container -->
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-
+<script src='<c:url value="/resources/jquery-3.1.0.min.js"></c:url>'></script>
+<script src='<c:url value="/resources/bootstrap-table/bootstrap-table.min.js"></c:url>'></script>
+<script src='<c:url value="/resources/bootstrap-table/bootstrap-table.js"></c:url>'></script>
+<script src='<c:url value="/resources/bootstrap-table/bootstrap-table-zh-CN.js"></c:url>'></script>
+<script src='<c:url value="/resources/echarts.js"></c:url>'></script>
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/jquery.js"></c:url>'></script>
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/bootstrap-transition.js"></c:url>'></script>
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/bootstrap-dropdown.js"></c:url>'></script>
@@ -107,5 +90,13 @@
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/bootstrap-collapse.js"></c:url>'></script>
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/bootstrap-carousel.js"></c:url>'></script>
 <script src='<c:url value="/resources/bootstrap/twitter-bootstrap-v2/docs/assets/js/bootstrap-typeahead.js"></c:url>'></script>
+
 </body>
+<script type="text/javascript">
+    function download() {
+        var date = document.getElementById('date').value;
+        window.location.href = '<%=basePath%>log/wangmengDownload?date='+date;
+    }
+
+</script>
 </html>

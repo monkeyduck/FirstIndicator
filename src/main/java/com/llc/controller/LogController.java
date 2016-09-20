@@ -212,6 +212,29 @@ public class LogController {
         return mv;
     }
 
+    @RequestMapping(value = "/wangmeng")
+    public ModelAndView wangmeng(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("wangmeng");
+        return mv;
+    }
+
+    @RequestMapping(value = "/wangmengDownload")
+    public ModelAndView wangmengDownload(@RequestParam("date") String date, HttpServletResponse response) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("wangmeng");
+
+        String filename = "edu"+date+".txt";
+        String path = "/home/llc/analysisResult/";
+        try{
+            DownloadFileUtil.pushFile(filename,path+filename,response);
+        }catch (IOException e){
+            logger.error(e.getMessage());
+            mv.addObject("error","没有该日期的文件");
+        }
+        return mv;
+    }
+
 
 
     }

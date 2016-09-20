@@ -7,8 +7,7 @@
     <groupId>LogWebService</groupId>
     <artifactId>LogWebService</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>LogWebService</name>
+    <version>1.0</version>
 
 
     <properties>
