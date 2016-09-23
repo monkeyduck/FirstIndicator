@@ -75,28 +75,25 @@
 
     <div class="row" style="margin-bottom: 10px">
         <select style="float:left" class="selectpicker" id="versionSelect" style="width: 40px">
-            <option value="all">全部版本</option>
+            <option value="">全部版本</option>
             <c:forEach items="${versionList}" var="version">
                 <option value="${version}" <c:if test="${version eq ver}">selected="selected"</c:if> >${version}</option>
             </c:forEach>
         </select>
 
-        <%--<div style="float: left">--%>
-            <%--<button class="btn" id="button_version" onclick="displayByVersion()">按版本筛选</button>--%>
-        <%--</div>--%>
-
-        <%--<div style="float: left">--%>
-            <%--<select style="float:left" class="selectpicker" id="userTypeSelect" style="width: 20px">--%>
-                <%--<option value="all">真实用户</option>--%>
-                <%--<c:forEach items="${userTypeList}" var="userType">--%>
-                    <%--<option value="${userType}" <c:if test="${userType eq utype}">selected="selected"</c:if> >${typeName[userType]}</option>--%>
-                <%--</c:forEach>--%>
-            <%--</select>--%>
-        <%--</div>--%>
-
-        <%--<div style="float: left">--%>
-            <%--<button class="btn" id="button_usertype" onclick="displayByUserType()">按用户筛选</button>--%>
-        <%--</div>--%>
+        <div style="float: left">
+            <select style="float:left" class="selectpicker" id="userTypeSelect" style="width: 20px">
+                <c:forEach items="${userTypeList}" var="userType">
+                    <option value="${userType}" <c:if test="${userType eq utype}">selected="selected"</c:if> >${typeName[userType]}</option>
+                </c:forEach>
+                <%--<option value="real">真实用户</option>--%>
+                <%--<option value="indoor ">入户用户</option>--%>
+                <%--<option value="market">市场用户</option>--%>
+                <%--<option value="innerTest">公司测试</option>--%>
+                <%--<option value="gray">灰度用户</option>--%>
+                <%--<option value="vip">VIP用户</option>--%>
+            </select>
+        </div>
 
         <div style="float: right">
             <label style="padding-right: 10px">
@@ -211,23 +208,36 @@
 
 </body>
 <script type="text/javascript">
+    <%--function displayByHour() {--%>
+        <%--var version = document.getElementById("versionSelect").value;--%>
+        <%--var member_type = document.getElementById("userTypeSelect").value;--%>
+        <%--$.ajax({--%>
+            <%--url: '<%=basePath%>stat/ajax?member_type='+member_type+'&version='+version+'&type=hour',--%>
+            <%--type: 'POST',--%>
+            <%--data: {},--%>
+            <%--dataType: 'json',--%>
+            <%--success: function (data) {--%>
+
+                <%--// set the content of #myTable to the result of the AJAX call--%>
+                <%--$('#table_data').setData(data);--%>
+
+            <%--},--%>
+            <%--error: function(xhr, ajaxOptions, thrownError){--%>
+                <%--alert('An error occurred! ' + thrownError);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
+
     function displayByDate() {
         var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?version='+version+'&type=date';
+        var member_type = document.getElementById("userTypeSelect").value;
+        window.location.href = '<%=basePath%>stat/first?member_type='+member_type+'&version='+version+'&type=date';
     }
     function displayByHour() {
         var version = document.getElementById("versionSelect").value;
-        window.location.href = '<%=basePath%>stat/version?type=hour&version='+version;
+        var member_type = document.getElementById("userTypeSelect").value;
+        window.location.href = '<%=basePath%>stat/first?member_type='+member_type+'&version='+version+'&type=hour';
     }
-    <%--function displayByVersion() {--%>
-        <%--var version = document.getElementById("versionSelect").value;--%>
-        <%--window.location.href = '<%=basePath%>stat/version?version='+version+'&type=time';--%>
-    <%--}--%>
-
-    <%--function displayByUserType() {--%>
-        <%--var userType = document.getElementById("userTypeSelect").value;--%>
-        <%--window.location.href = '<%=basePath%>stat/userType?userType='+userType+'&type=time';--%>
-    <%--}--%>
     function chart(index){
         // 基于准备好的dom，初始化echarts实例
         var title_list = ['总用户数', '日新增用户数', '日活跃', '人均使用时长', '1日留存率', '3日留存率', '7日留存率','bug数'];

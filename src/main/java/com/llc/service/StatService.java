@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public interface StatService {
 
-    List<FirstIndicator> getStatistic();
+    List<FirstIndicator> getStatistic(String member_type, String version);
 
     List<FirstIndicator> getStatisticByVersion(String version);
 
-    List<FirstIndicator> getStatisticByDate();
+    List<FirstIndicator> getStatisticByDate(String member_type, String version);
 
     List<String> getVersionList();
 

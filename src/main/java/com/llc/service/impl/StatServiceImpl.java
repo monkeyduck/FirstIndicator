@@ -17,16 +17,16 @@ public class StatServiceImpl implements StatService{
     @Resource
     StatDao statDao;
 
-    public List<FirstIndicator> getStatistic(){
-        return this.statDao.getStatistic();
+    public List<FirstIndicator> getStatistic(String member_type, String version){
+        return this.statDao.getStatistic(member_type, version);
     }
 
     public List<FirstIndicator> getStatisticByVersion(String version){
         return this.statDao.getStatisticByVersion(version);
     }
 
-    public List<FirstIndicator> getStatisticByDate(){
-        return this.statDao.getStatisticByDate();
+    public List<FirstIndicator> getStatisticByDate(String member_type, String version){
+        return this.statDao.getStatisticByDate(member_type, version);
     }
 
     public List<String> getVersionList(){

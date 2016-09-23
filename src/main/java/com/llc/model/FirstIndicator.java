@@ -24,6 +24,10 @@ public class FirstIndicator {
 
     private float retention_7;
 
+    private String member_type;
+
+    private String version;
+
     public float getRetention_3() {
         return retention_3;
     }
@@ -119,6 +123,22 @@ public class FirstIndicator {
 
     public void setAvgUsedTimePerUser(float avgUsedTimePerUser) {
         this.avgUsedTimePerUser = avgUsedTimePerUser;
+    }
+
+    public String getMember_type() {
+        return member_type;
+    }
+
+    public void setMember_type(String member_type) {
+        this.member_type = member_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public List<String> calCompare(FirstIndicator last, String type){

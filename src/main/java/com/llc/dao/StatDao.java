@@ -1,6 +1,7 @@
 package com.llc.dao;
 
 import com.llc.model.FirstIndicator;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,13 @@ import java.util.Map;
  */
 public interface StatDao {
 
-    List<FirstIndicator> getStatistic();
+    List<FirstIndicator> getStatistic(@Param("member_type") String member_type,
+                                      @Param("version") String version);
 
     List<FirstIndicator> getStatisticByVersion(String version);
 
-    List<FirstIndicator> getStatisticByDate();
+    List<FirstIndicator> getStatisticByDate(@Param("member_type") String member_type,
+                                            @Param("version") String version);
 
     List<String> getVersionList();
 

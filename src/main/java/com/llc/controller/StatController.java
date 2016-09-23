@@ -31,38 +31,48 @@ public class StatController {
     private static Map<String, String> userTypeName = new HashMap<String, String>();
     static{
         userTypes.add("real");
+        userTypes.add("indoor");
+        userTypes.add("market");
+        userTypes.add("innerTest");
+        userTypes.add("gray");
+        userTypes.add("vip");
         userTypeName.put("real", "真实用户");
+        userTypeName.put("indoor","入户用户");
+        userTypeName.put("market","市场用户");
+        userTypeName.put("innerTest","公司内测");
+        userTypeName.put("gray","灰度用户");
+        userTypeName.put("vip","VIP用户");
     }
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);
 
-    @RequestMapping("/first")
-    public ModelAndView displayFirstIndicator(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              @RequestParam(value = "type",required = false) String type){
-        ModelAndView modelAndView = new ModelAndView();
-        List<FirstIndicator> indicators;
-        List<String> versions = statService.getVersionList();
-        if (type==null){
-            type = "time";
-        }
-        if (type.equals("date")){
-            indicators = statService.getStatisticByDate();
-        }else{
-            indicators = statService.getStatistic();
-        }
-        List<String> compare = calCompare(type, indicators);
-        List<List<String>> chartData = getChartData(indicators);
-        modelAndView.addObject("firstStatList", indicators);
-        modelAndView.addObject("versionList", versions);
-        modelAndView.addObject("userTypeList", userTypes);
-        modelAndView.addObject("typeName", userTypeName);
-        modelAndView.addObject("chartData", chartData);
-        modelAndView.addObject("compare", compare);
-        modelAndView.addObject("type", type);
-        modelAndView.setViewName("first");
-        return modelAndView;
-    }
+//    @RequestMapping("/first")
+//    public ModelAndView displayFirstIndicator(HttpServletRequest request,
+//                                              HttpServletResponse response,
+//                                              @RequestParam(value = "type",required = false) String type){
+//        ModelAndView modelAndView = new ModelAndView();
+//        List<FirstIndicator> indicators;
+//        List<String> versions = statService.getVersionList();
+//        if (type==null){
+//            type = "time";
+//        }
+//        if (type.equals("date")){
+//            indicators = statService.getStatisticByDate();
+//        }else{
+//            indicators = statService.getStatistic();
+//        }
+//        List<String> compare = calCompare(type, indicators);
+//        List<List<String>> chartData = getChartData(indicators);
+//        modelAndView.addObject("firstStatList", indicators);
+//        modelAndView.addObject("versionList", versions);
+//        modelAndView.addObject("userTypeList", userTypes);
+//        modelAndView.addObject("typeName", userTypeName);
+//        modelAndView.addObject("chartData", chartData);
+//        modelAndView.addObject("compare", compare);
+//        modelAndView.addObject("type", type);
+//        modelAndView.setViewName("first");
+//        return modelAndView;
+//    }
 
     private List<List<String>> getChartData(List<FirstIndicator> indicators){
         List<List<String>> chartData = new ArrayList<List<String>>();
@@ -83,74 +93,34 @@ public class StatController {
         return chartData;
     }
 
-    @RequestMapping("/version")
-    public ModelAndView displayByVersion(@RequestParam(value = "version") String version,
-                                         @RequestParam(value = "type") String type){
-        ModelAndView mv = new ModelAndView();
+
+    @RequestMapping("/first")
+    public ModelAndView crossingFilter(@RequestParam(value="member_type",defaultValue = "real") String member_type,
+                                       @RequestParam(value="version",defaultValue = "") String version,
+                                       @RequestParam(value="type",defaultValue = "hour") String type){
+        ModelAndView modelAndView = new ModelAndView();
         List<FirstIndicator> indicators;
-        if (version.equals("all")){
-            if (type.equals("date")){
-                indicators = statService.getStatisticByDate();
-            }else{
-                indicators = statService.getStatistic();
-            }
-        }
-        else{
-            if (type.equals("date")){
-                indicators = statService.getStatisticByVersionByDate(version);
-            }
-            else{
-                indicators = statService.getStatisticByVersion(version);
-            }
+        if (type.equals("date")){
+            indicators = statService.getStatisticByDate(member_type,version);
+        }else{
+            indicators = statService.getStatistic(member_type,version);
         }
         List<String> versions = statService.getVersionList();
         List<List<String>> chartData = getChartData(indicators);
         List<String> compare = calCompare(type, indicators);
 
-        mv.addObject("chartData", chartData);
-        mv.addObject("firstStatList", indicators);
-        mv.addObject("versionList", versions);
-        mv.addObject("ver", version);
-        mv.addObject("compare", compare);
-        mv.addObject("type", type);
-        mv.setViewName("first");
-        return mv;
+        modelAndView.addObject("firstStatList", indicators);
+        modelAndView.addObject("versionList", versions);
+        modelAndView.addObject("userTypeList", userTypes);
+        modelAndView.addObject("typeName", userTypeName);
+        modelAndView.addObject("chartData", chartData);
+        modelAndView.addObject("compare", compare);
+        modelAndView.addObject("utype", member_type);
+        modelAndView.addObject("ver", version);
+        modelAndView.setViewName("first");
+        return modelAndView;
     }
 
-    @RequestMapping("/userType")
-    public ModelAndView displayByUserType(@RequestParam(value = "userType") String userType,
-                                          @RequestParam(value = "type") String type){
-        ModelAndView mv = new ModelAndView();
-        List<FirstIndicator> indicators;
-        if (userType.equals("all")){
-            if (type.equals("date")){
-                indicators = statService.getStatisticByDate();
-            }else{
-                indicators = statService.getStatistic();
-            }
-        }
-        else{
-            if (type.equals("date")){
-                indicators = statService.getStatisticByUserTypeByDate(userType);
-            }
-            else{
-                indicators = statService.getStatisticByUserType(userType);
-            }
-        }
-
-        List<List<String>> chartData = getChartData(indicators);
-        List<String> compare = calCompare(type, indicators);
-
-        mv.addObject("chartData", chartData);
-        mv.addObject("firstStatList", indicators);
-        mv.addObject("userTypeList", userTypes);
-        mv.addObject("typeName", userTypeName);
-        mv.addObject("utype", userType);
-        mv.addObject("compare", compare);
-        mv.addObject("type", type);
-        mv.setViewName("first");
-        return mv;
-    }
 
     public List<String> calCompare(String type, List<FirstIndicator> indicators){
         int len = indicators.size();
