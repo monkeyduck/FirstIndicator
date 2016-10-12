@@ -118,7 +118,9 @@
                     <th>总用户数</th>
                     <th>日新增用户数</th>
                     <th>日活</th>
-                    <th>日人均使用时长(分钟)</th>
+                    <th>有效日活</th>
+                    <th>日人均(分钟)</th>
+                    <th>有效人均</th>
                     <th>一日留存率</th>
                     <th>三日留存率</th>
                     <th>七日留存率</th>
@@ -136,15 +138,20 @@
                     <td><button class="btn btn-default"  onclick="chart(5)">画图</button> </td>
                     <td><button class="btn btn-default"  onclick="chart(6)">画图</button> </td>
                     <td><button class="btn btn-default"  onclick="chart(7)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(8)">画图</button> </td>
+                    <td><button class="btn btn-default"  onclick="chart(9)">画图</button> </td>
+
 
                 </tr>
             <c:forEach items="${firstStatList}" var="stat">
                 <tr>
                     <td height="80%">${stat.displayTime}</td>
                     <td>${stat.totalUserNum}</td>
-                    <td>${stat.dailyNewUser}</td>
+                    <td>${stat.newUserNum}</td>
                     <td>${stat.dailyActive}</td>
+                    <td>${stat.validDailyActive}</td>
                     <td>${stat.avgUsedTimePerUser}</td>
+                    <td>${stat.validAvgUsedTimePerUser}</td>
                     <td>${stat.retention}</td>
                     <td>${stat.retention_3}</td>
                     <td>${stat.retention_7}</td>
@@ -166,7 +173,8 @@
                     <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
                     <td><button class="btn btn-default" onclick="chart(6)">画图</button> </td>
                     <td><button class="btn btn-default" onclick="chart(7)">画图</button> </td>
-
+                    <td><button class="btn btn-default" onclick="chart(8)">画图</button> </td>
+                    <td><button class="btn btn-default" onclick="chart(9)">画图</button> </td>
                 </tr>
             </tbody>
 
@@ -208,25 +216,6 @@
 
 </body>
 <script type="text/javascript">
-    <%--function displayByHour() {--%>
-        <%--var version = document.getElementById("versionSelect").value;--%>
-        <%--var member_type = document.getElementById("userTypeSelect").value;--%>
-        <%--$.ajax({--%>
-            <%--url: '<%=basePath%>stat/ajax?member_type='+member_type+'&version='+version+'&type=hour',--%>
-            <%--type: 'POST',--%>
-            <%--data: {},--%>
-            <%--dataType: 'json',--%>
-            <%--success: function (data) {--%>
-
-                <%--// set the content of #myTable to the result of the AJAX call--%>
-                <%--$('#table_data').setData(data);--%>
-
-            <%--},--%>
-            <%--error: function(xhr, ajaxOptions, thrownError){--%>
-                <%--alert('An error occurred! ' + thrownError);--%>
-            <%--}--%>
-        <%--});--%>
-    <%--}--%>
 
     function displayByDate() {
         var version = document.getElementById("versionSelect").value;
@@ -240,13 +229,13 @@
     }
     function chart(index){
         // 基于准备好的dom，初始化echarts实例
-        var title_list = ['总用户数', '日新增用户数', '日活跃', '人均使用时长', '1日留存率', '3日留存率', '7日留存率','bug数'];
+        var title_list = ['总用户数', '日新增用户数', '日活', '有效日活','人均使用时长', '有效人均时长','1日留存率', '3日留存率', '7日留存率','bug数'];
         var title_name = title_list[index];
-        var label_list = ['人数', '人数', '人数', '分钟', '留存率', '留存率', '留存率', 'bug数'];
+        var label_list = ['人数', '人数', '人数', '人数','分钟','分钟', '留存率', '留存率', '留存率', 'bug数'];
         var label = label_list[index];
         var myChart = echarts.init(document.getElementById('main'));
         var showData = eval($('#chartData').text())[index];
-        var xaxis = eval($('#chartData').text())[8];
+        var xaxis = eval($('#chartData').text())[10];
         // 指定图表的配置项和数据
         var option = {
             title: {

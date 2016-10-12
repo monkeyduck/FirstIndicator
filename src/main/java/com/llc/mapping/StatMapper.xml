@@ -5,9 +5,11 @@
 <resultMap id="FirstIndicatorMap" type="com.llc.model.FirstIndicator" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="totalUserNum" property="totalUserNum" jdbcType="INTEGER"/>
-    <result column="dailyActive" property="dailyActive" jdbcType="INTEGER" />
     <result column="newUserNum" property="newUserNum" jdbcType="INTEGER" />
-    <result column="avgUsedTime" property="avgUsedTime" jdbcType="FLOAT" />
+    <result column="dailyActive" property="dailyActive" jdbcType="INTEGER" />
+    <result column="validDailyActive" property="validDailyActive" jdbcType="INTEGER" />
+    <result column="avgUsedTimePerUser" property="avgUsedTimePerUser" jdbcType="FLOAT" />
+    <result column="validAvgUsedTimePerUser" property="validAvgUsedTimePerUser" jdbcType="FLOAT"/>
     <result column="retention" property="retention" jdbcType="FLOAT"/>
     <result column="retention_3" property="retention_3" jdbcType="FLOAT"/>
     <result column="retention_7" property="retention_7" jdbcType="FLOAT"/>
@@ -18,8 +20,8 @@
 </resultMap>
 
     <sql id="FirstStat_Column_List">
-      totalUserNum, dailyActive,newUserNum,avgUsedTimePerUser,retention,retention_3,
-      retention_7,bugNum,displayTime,member_type,version
+      totalUserNum,newUserNum,dailyActive, validDailyActive, avgUsedTimePerUser, validAvgUsedTimePerUser,
+      retention,retention_3,retention_7,bugNum,displayTime,member_type,version
     </sql>
 
     <select id="getStatistic" resultMap="FirstIndicatorMap" parameterType="java.lang.String">

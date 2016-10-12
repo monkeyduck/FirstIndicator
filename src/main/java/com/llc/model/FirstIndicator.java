@@ -14,6 +14,8 @@ public class FirstIndicator {
 
     private int dailyActive;
 
+    private int validDailyActive;
+
     private int newUserNum;
 
     private int bugNum;
@@ -27,6 +29,28 @@ public class FirstIndicator {
     private String member_type;
 
     private String version;
+
+    private float avgUsedTimePerUser;
+
+    private float validAvgUsedTimePerUser;
+
+    private String displayTime;
+
+    public void setTotalUserNum(int totalUserNum) {
+        this.totalUserNum = totalUserNum;
+    }
+
+    public String getDisplayTime() {
+        return displayTime;
+    }
+
+    public void setDisplayTime(String displayTime) {
+        this.displayTime = displayTime;
+    }
+
+    public int getTotalUserNum() {
+        return totalUserNum;
+    }
 
     public float getRetention_3() {
         return retention_3;
@@ -65,12 +89,12 @@ public class FirstIndicator {
         this.retention = retention;
     }
 
-    private float avgUsedTimePerUser;
+    public int getDailyActive() {
+        return dailyActive;
+    }
 
-    private String displayTime;
-
-    public void setTotalUserNum(int totalUserNum) {
-        this.totalUserNum = totalUserNum;
+    public void setDailyActive(int dailyActive) {
+        this.dailyActive = dailyActive;
     }
 
     public int getNewUserNum() {
@@ -81,40 +105,28 @@ public class FirstIndicator {
         this.newUserNum = newUserNum;
     }
 
-    public String getDisplayTime() {
-        return displayTime;
-    }
-
-    public void setDisplayTime(String displayTime) {
-        this.displayTime = displayTime;
-    }
-
-    public int getTotalUserNum() {
-        return totalUserNum;
-    }
-
-    public int getDailyActive() {
-        return dailyActive;
-    }
-
-    public void setDailyActive(int dailyActive) {
-        this.dailyActive = dailyActive;
-    }
-
-    public int getDailyNewUser() {
-        return newUserNum;
-    }
-
-    public void setDailyNewUser(int dailyNewUser) {
-        this.newUserNum = dailyNewUser;
-    }
-
     public int getBugNum() {
         return bugNum;
     }
 
     public void setBugNum(int bugNum) {
         this.bugNum = bugNum;
+    }
+
+    public int getValidDailyActive() {
+        return validDailyActive;
+    }
+
+    public void setValidDailyActive(int validDailyActive) {
+        this.validDailyActive = validDailyActive;
+    }
+
+    public float getValidAvgUsedTimePerUser() {
+        return validAvgUsedTimePerUser;
+    }
+
+    public void setValidAvgUsedTimePerUser(float validAvgUsedTimePerUser) {
+        this.validAvgUsedTimePerUser = validAvgUsedTimePerUser;
     }
 
     public float getAvgUsedTimePerUser() {
@@ -151,8 +163,13 @@ public class FirstIndicator {
         compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getDailyActive()-last.getDailyActive(),last.getDailyActive());
         compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getValidDailyActive()-last.getValidDailyActive(),last.getValidDailyActive());
+        compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getAvgUsedTimePerUser()-last.getAvgUsedTimePerUser(),
                 last.getAvgUsedTimePerUser());
+        compare.add(String.format("%.2f%%", f));
+        f = 100*Utils.devide(this.getValidAvgUsedTimePerUser()-last.getValidAvgUsedTimePerUser(),
+                last.getValidAvgUsedTimePerUser());
         compare.add(String.format("%.2f%%", f));
         f = 100*Utils.devide(this.getRetention()-last.getRetention(),last.getRetention());
         compare.add(String.format("%.2f%%", f));

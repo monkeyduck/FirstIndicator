@@ -46,49 +46,23 @@ public class StatController {
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);
 
-//    @RequestMapping("/first")
-//    public ModelAndView displayFirstIndicator(HttpServletRequest request,
-//                                              HttpServletResponse response,
-//                                              @RequestParam(value = "type",required = false) String type){
-//        ModelAndView modelAndView = new ModelAndView();
-//        List<FirstIndicator> indicators;
-//        List<String> versions = statService.getVersionList();
-//        if (type==null){
-//            type = "time";
-//        }
-//        if (type.equals("date")){
-//            indicators = statService.getStatisticByDate();
-//        }else{
-//            indicators = statService.getStatistic();
-//        }
-//        List<String> compare = calCompare(type, indicators);
-//        List<List<String>> chartData = getChartData(indicators);
-//        modelAndView.addObject("firstStatList", indicators);
-//        modelAndView.addObject("versionList", versions);
-//        modelAndView.addObject("userTypeList", userTypes);
-//        modelAndView.addObject("typeName", userTypeName);
-//        modelAndView.addObject("chartData", chartData);
-//        modelAndView.addObject("compare", compare);
-//        modelAndView.addObject("type", type);
-//        modelAndView.setViewName("first");
-//        return modelAndView;
-//    }
-
     private List<List<String>> getChartData(List<FirstIndicator> indicators){
         List<List<String>> chartData = new ArrayList<List<String>>();
-        for (int i=0;i<9;i++){
+        for (int i=0;i<11;i++){
             chartData.add(new ArrayList<String>());
         }
         for (FirstIndicator fi: indicators){
             chartData.get(0).add(""+fi.getTotalUserNum());
             chartData.get(1).add(""+fi.getNewUserNum());
             chartData.get(2).add(""+fi.getDailyActive());
-            chartData.get(3).add(""+fi.getAvgUsedTimePerUser());
-            chartData.get(4).add(""+fi.getRetention());
-            chartData.get(5).add(""+fi.getRetention_3());
-            chartData.get(6).add(""+fi.getRetention_7());
-            chartData.get(7).add(""+fi.getBugNum());
-            chartData.get(8).add(String.format("'%s'",fi.getDisplayTime()));
+            chartData.get(3).add(""+fi.getValidDailyActive());
+            chartData.get(4).add(""+fi.getAvgUsedTimePerUser());
+            chartData.get(5).add(""+fi.getValidAvgUsedTimePerUser());
+            chartData.get(6).add(""+fi.getRetention());
+            chartData.get(7).add(""+fi.getRetention_3());
+            chartData.get(8).add(""+fi.getRetention_7());
+            chartData.get(9).add(""+fi.getBugNum());
+            chartData.get(10).add(String.format("'%s'",fi.getDisplayTime()));
         }
         return chartData;
     }
