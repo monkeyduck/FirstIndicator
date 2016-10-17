@@ -38,7 +38,7 @@
     <select id="getStatisticByDate" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
         SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from firstindicator where
         member_type=#{member_type} and version=#{version} ORDER BY id DESC
-        limit 0,15) AS tmp ORDER BY displayTime
+        limit 0,30) AS tmp ORDER BY displayTime
     </select>
 
     <select id="getVersionList" resultType="java.lang.String">
