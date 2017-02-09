@@ -12,6 +12,12 @@
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+    String url = request.getQueryString();
+    String exportToExcel = request.getParameter("exportToExcel");
+    if(exportToExcel != null && exportToExcel.toString().equalsIgnoreCase("YES")){
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        response.setHeader("Content-Disposition","inline; filename=" + "firstIndicator.xls");
+    }
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -22,16 +28,16 @@
 <head>
     <meta charset="utf-8">
     <%--<script type="text/javascript">--%>
-        <%--$(document).ready(function(){--%>
-            <%--$("button_date").click(function(){--%>
-                <%--htmlobj=$.ajax({url:"<%=basePath%>stat/first?&type=date",async:false});--%>
-                <%--$("#table_data").html(htmlobj);--%>
-            <%--});--%>
-            <%--$("button_hour").click(function(){--%>
-                <%--htmlobj=$.ajax({url:"<%=basePath%>stat/first?&type=hour",async:false});--%>
-                <%--$("#table_data").html(htmlobj);--%>
-            <%--});--%>
-        <%--});--%>
+    <%--$(document).ready(function(){--%>
+    <%--$("button_date").click(function(){--%>
+    <%--htmlobj=$.ajax({url:"<%=basePath%>stat/first?&type=date",async:false});--%>
+    <%--$("#table_data").html(htmlobj);--%>
+    <%--});--%>
+    <%--$("button_hour").click(function(){--%>
+    <%--htmlobj=$.ajax({url:"<%=basePath%>stat/first?&type=hour",async:false});--%>
+    <%--$("#table_data").html(htmlobj);--%>
+    <%--});--%>
+    <%--});--%>
     <%--</script>--%>
     <title>一级指标</title>
     <link type="text/css" href='<c:url value="/resources/bootstrap-table/bootstrap-table.css"></c:url>' rel="stylesheet" >
@@ -97,6 +103,12 @@
 
         <div style="float: right">
             <label style="padding-right: 10px">
+                <button class="btn btn-default" id="button_member_count" onclick="displayMemberCount()">人数统计</button>
+            </label>
+        </div>
+
+        <div style="float: right">
+            <label style="padding-right: 10px">
                 <button class="btn btn-default" id="button_date" onclick="displayByDate()">按日期</button>
             </label>
         </div>
@@ -113,69 +125,67 @@
     <div class="row" id="table_data">
         <table class="table table-striped" cellpadding="2px" cellspacing="2px">
             <thead>
-                <tr>
-                    <th>时间</th>
-                    <th>总用户数</th>
-                    <th>日新增用户数</th>
-                    <th>日活</th>
-                    <th>有效日活</th>
-                    <th>日人均(分钟)</th>
-                    <th>有效人均</th>
-                    <th>一日留存率</th>
-                    <th>三日留存率</th>
-                    <th>七日留存率</th>
-                    <th>bug数</th>
-                </tr>
+            <tr>
+                <th>时间</th>
+                <th>总用户数</th>
+                <th>日新增用户数</th>
+                <th>日活</th>
+                <th>有效日活</th>
+                <th>日人均(分钟)</th>
+                <th>有效人均</th>
+                <th>一日留存率</th>
+                <th>三日留存率</th>
+                <th>七日留存率</th>
+                <th>bug数</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>    </td>
-                    <td height="80%"><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(1)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(2)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(3)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(4)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(5)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(6)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(7)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(8)">画图</button> </td>
-                    <td><button class="btn btn-default"  onclick="chart(9)">画图</button> </td>
-
-
-                </tr>
+            <tr>
+                <td>    </td>
+                <td height="80%"><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(1)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(2)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(3)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(4)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(5)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(6)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(7)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(8)">画图</button> </td>
+                <td><button class="btn btn-default"  onclick="chart(9)">画图</button> </td>
+            </tr>
             <c:forEach items="${firstStatList}" var="stat">
                 <tr>
                     <td height="80%">${stat.displayTime}</td>
-                    <td>${stat.totalUserNum}</td>
-                    <td>${stat.newUserNum}</td>
+                    <td><a onclick="displayMember('${stat.displayTime}');">${stat.totalUserNum}</a> </td>
+                    <td><a onclick="displayDailyNewMember('${stat.displayTime}');">${stat.newUserNum}</a></td>
                     <td>${stat.dailyActive}</td>
                     <td>${stat.validDailyActive}</td>
-                    <td>${stat.avgUsedTimePerUser}</td>
-                    <td>${stat.validAvgUsedTimePerUser}</td>
+                    <td><a onclick="displayDailyActiveTime('${stat.displayTime}');">${stat.avgUsedTimePerUser}</a></td>
+                    <td><a onclick="displayValidDailyActiveTime('${stat.displayTime}');">${stat.validAvgUsedTimePerUser}</a></td>
                     <td>${stat.retention}</td>
                     <td>${stat.retention_3}</td>
                     <td>${stat.retention_7}</td>
                     <td>${stat.bugNum}</td>
                 </tr>
             </c:forEach>
-                <tr>
-                    <c:forEach items="${compare}" var="val">
-                        <td>${val}</td>
-                    </c:forEach>
-                </tr>
-                <tr>
-                    <td>    </td>
-                    <td><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(1)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(2)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(3)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(4)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(6)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(7)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(8)">画图</button> </td>
-                    <td><button class="btn btn-default" onclick="chart(9)">画图</button> </td>
-                </tr>
+            <tr>
+                <c:forEach items="${compare}" var="val">
+                    <td>${val}</td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <td>    </td>
+                <td><button class="btn btn-default" onclick="chart(0)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(1)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(2)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(3)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(4)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(5)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(6)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(7)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(8)">画图</button> </td>
+                <td><button class="btn btn-default" onclick="chart(9)">画图</button> </td>
+            </tr>
             </tbody>
 
         </table>
@@ -184,7 +194,7 @@
         <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
         <div id="main" style="width: 960px;height:400px; text-align: center"></div>
         <div class="btn-success" style="float:right">
-            <button class="btn-success" id="exportExcel" >导出excel</button>
+            <button class="btn-success" id="exportExcel" onclick="TableToExcel()">导出excel</button>
         </div>
     </div>
 
@@ -217,16 +227,66 @@
 </body>
 <script type="text/javascript">
 
+    function displayMember(date) {
+        var version = document.getElementById("versionSelect").value;
+        var member_type = document.getElementById("userTypeSelect").value;
+        var type = 'hour';
+        if(date.length==10){
+            type = 'date';
+        }
+        window.location.href = '<%=basePath%>stat/member?member_type='+member_type+'&version='+version+'&type='+type+'&date='+date;
+    }
+
+    function displayDailyNewMember(date) {
+        var version = document.getElementById("versionSelect").value;
+        var member_type = document.getElementById("userTypeSelect").value;
+        var type = 'hour';
+        if(date.length==10){
+            type = 'date';
+        }
+        window.location.href = '<%=basePath%>stat/dailyNewMember?member_type='+member_type+'&version='+version+'&type='+type+'&date='+date;
+    }
+
+    function displayDailyActiveTime(date) {
+        var version = document.getElementById("versionSelect").value;
+        var member_type = document.getElementById("userTypeSelect").value;
+        var type = 'hour';
+        if(date.length==10){
+            type = 'date';
+        }
+        window.location.href = '<%=basePath%>stat/dailyActiveTime?member_type='+member_type+'&version='+version+'&type='+type+'&date='+date.substring(0,10);
+    }
+
+    function displayValidDailyActiveTime(date) {
+        var version = document.getElementById("versionSelect").value;
+        var member_type = document.getElementById("userTypeSelect").value;
+        var type = 'hour';
+        if(date.length==10){
+            type = 'date';
+        }
+        window.location.href = '<%=basePath%>stat/validDailyActiveTime?member_type='+member_type+'&version='+version+'&type='+type+'&date='+date.substring(0,10);
+    }
+
     function displayByDate() {
         var version = document.getElementById("versionSelect").value;
         var member_type = document.getElementById("userTypeSelect").value;
         window.location.href = '<%=basePath%>stat/first?member_type='+member_type+'&version='+version+'&type=date';
     }
+
     function displayByHour() {
         var version = document.getElementById("versionSelect").value;
         var member_type = document.getElementById("userTypeSelect").value;
         window.location.href = '<%=basePath%>stat/first?member_type='+member_type+'&version='+version+'&type=hour';
     }
+
+    function displayMemberCount() {
+        window.location.href = '<%=basePath%>stat/memberCount?isValid=all&member_type=real';
+    }
+
+    function TableToExcel() {
+        window.location.href = '<%=basePath%>stat/first?<%=url%>&exportToExcel=YES';
+    }
+
     function chart(index){
         // 基于准备好的dom，初始化echarts实例
         var title_list = ['总用户数', '日新增用户数', '日活', '有效日活','人均使用时长', '有效人均时长','1日留存率', '3日留存率', '7日留存率','bug数'];

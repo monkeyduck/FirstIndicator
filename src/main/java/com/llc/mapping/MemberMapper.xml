@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.llc.dao.MemberDao">
+    <resultMap id="MemberMap" type="com.llc.model.Member" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="member_id" property="member_id" jdbcType="VARCHAR" />
+        <result column="device_id" property="device_id" jdbcType="VARCHAR"/>
+        <result column="nick_name" property="nick_name" jdbcType="VARCHAR" />
+        <result column="real_name" property="real_name" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="VARCHAR" />
+        <result column="age" property="birthday" jdbcType="INTEGER" />
+        <result column="signup_time" property="signup_time" jdbcType="VARCHAR" />
+        <result column="member_type" property="member_type" jdbcType="INTEGER"/>
+        <result column="version" property="version" jdbcType="VARCHAR"/>
+        <result column="date" property="date" jdbcType="VARCHAR"/>
+        <result column="usedTime" property="usedTime" jdbcType="VARCHAR"/>
+        <result column="isValid" property="isValid" jdbcType="VARCHAR"/>
+        <result column="member_count" property="member_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Member_Column_List">
+        a.member_id, a.device_id, nick_name, real_name, a.gender, a.birthday, a.signup_time, a.member_type, b.version
+    </sql>
+
+    <sql id="Daily_New_Member_Column_List">
+        b.date, a.member_id,a.device_id,nick_name, real_name, a.gender, a.birthday, a.signup_time, a.member_type, b.version
+    </sql>
+
+    <sql id="Daily_Active_Time_Column_List">
+        b.date, a.member_id, a.device_id, a.gender, a.birthday, a.signup_time, a.member_type, usedTime, isValid, b.version
+    </sql>
+
+    <sql id="Valid_Daily_Active_Time_Column_List">
+        b.date, a.member_id, a.device_id, a.gender, a.birthday, a.signup_time, a.member_type, usedTime, b.version
+    </sql>
+
+    <select id="getMember" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT DISTINCT  <include refid="Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.first_use as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and version=#{version} and a.signup_time &lt;= #{date} group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+    <select id="getMemberByUserType" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT DISTINCT <include refid="Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.first_use as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and a.signup_time &lt;= #{date} group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+
+    <select id="getDailyNewMember" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_New_Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and version=#{version} and DATE(a.signup_time) = DATE(#{date}) and a.signup_time &lt;= #{date}  group by a.member_id)  as tmp
+        order by signup_time
+    </select>
+
+    <select id="getDailyNewMemberByUserType" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_New_Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and DATE(a.signup_time) = DATE(#{date}) and a.signup_time &lt;= #{date}  group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+    <select id="getDailyNewMemberByDate" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_New_Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and version=#{version} and DATE(a.signup_time) = DATE(#{date}) group by a.member_id)  as tmp
+        order by signup_time
+    </select>
+
+    <select id="getDailyNewMemberByUserTypeByDate" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_New_Member_Column_List"/> FROM
+        aibasis_stat.member_info AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        a.member_type=#{member_type} and DATE(a.signup_time) = DATE(#{date}) group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+    <select id="getDailyActiveTime" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_Active_Time_Column_List"/>  FROM
+        newstat.first_use AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        b.date = #{date} and a.member_type=#{member_type} and b.version=#{version} group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+    <select id="getDailyActiveTimeByUserType" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Daily_Active_Time_Column_List"/> FROM
+        newstat.first_use AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        b.date = #{date} and b.member_type=#{member_type} group by a.member_id)  as tmp
+        order by signup_time
+    </select>
+
+
+    <select id="getValidDailyActiveTime" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Valid_Daily_Active_Time_Column_List"/> FROM
+        newstat.first_use AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        isValid="true" and a.member_type=#{member_type} and b.version=#{version} and b.date = #{date} group by a.member_id) as tmp
+        order by signup_time
+    </select>
+
+    <select id="getValidDailyActiveTimeByUserType" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT * FROM (SELECT <include refid="Valid_Daily_Active_Time_Column_List"/> FROM
+        newstat.first_use AS a right join newstat.dailystart as b on a.member_id = b.member_id where
+        isValid="true" and a.member_type=#{member_type} and b.date = #{date} group by a.member_id)  as tmp
+        order by signup_time
+    </select>
+
+
+    <select id="getAllMemberCount" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT #{end_date} as `date`, version, count(DISTINCT member_id) as member_count FROM
+        newstat.first_use  where
+        member_type=#{member_type} and first_use_date &lt;= #{end_date} and version!='' and version != 'unknown'
+        group by `date`, version
+        order by `date`
+    </select>
+
+    <select id="getValidMemberCount" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT `date`, version, count(DISTINCT member_id) as member_count FROM
+        newstat.dailystart  where
+        member_type=#{member_type} and `date` &gt;= #{start_date} and `date` &lt;= #{end_date} and version!='' and version != 'unknown'
+        group by `date`, version
+        order by `date`
+    </select>
+
+    <select id="getAllRealMemberCount" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT #{end_date} as `date`, version, count(DISTINCT member_id) as member_count FROM
+        newstat.first_use  where
+        (member_type=0 or member_type=4) and first_use_date &lt;= #{end_date} and version!='' and version != 'unknown'
+        group by `date`, version
+        order by `date`
+    </select>
+
+    <select id="getValidRealMemberCount" resultMap="MemberMap" parameterType="java.lang.String">
+        SELECT DISTINCT `date`, version, count(DISTINCT member_id) as member_count FROM
+        newstat.dailystart  where
+        (member_type=0 or member_type=4) and `date` &gt;= #{start_date} and `date` &lt;= #{end_date} and version!='' and version != 'unknown'
+        group by `date`, version
+        order by `date`
+    </select>
+
+    <select id="getVersionList" resultType="java.lang.String">
+        SELECT DISTINCT(version) from first_use where version!='' and version != 'unknown' ORDER BY version ASC
+    </select>
+
+</mapper>

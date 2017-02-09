@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: llc
-  Date: 16/7/7
-  Time: 上午10:23
+  User: zoey
+  Date: 16/11/16
+  Time: 下午11:36
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -61,29 +61,29 @@
     <!-- Example row of columns -->
     <div class="row">
         <div class="span4">
-            <h2>日志分析</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/analyseLog">Enter</a></p>
+            <h2>讯飞听写请求</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/xfRequestCount">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>一级指标统计</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/first">Enter</a></p>
+            <h2>讯飞听写时延</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/xfDailyRecLatency">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>音频情绪分析</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>log/record">Enter</a></p>
+            <h2>讯飞合成时延</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/xfDailyTTSLatency">Enter</a></p>
         </div>
     </div>
     <div class="row" style="margin-top: 100px">
         <div class="span4">
-            <h2>实时日志</h2>
+            <h2>应用评价标准</h2>
             <p><a class="btn btn-success btn-large" href="<%=serverPath%>websocket/websocket.jsp">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>讯飞数据统计</h2>
-            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/xfRequestCount">Enter</a></p>
+            <h2>用户历史轨迹</h2>
+            <p><a class="btn btn-success btn-large" href="<%=basePath%>stat/xunfei">Enter</a></p>
         </div>
         <div class="span4">
-            <h2>给王萌</h2>
+            <h2>用户使用详情</h2>
             <p><a class="btn btn-success btn-large" href="<%=basePath%>log/wangmeng">Enter</a></p>
         </div>
     </div>
