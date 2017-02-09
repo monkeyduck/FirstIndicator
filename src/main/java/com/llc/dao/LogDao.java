@@ -1,6 +1,7 @@
 package com.llc.dao;
 
 import com.llc.model.Log;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,10 +10,8 @@ import java.util.List;
  */
 public interface LogDao {
 
-    public Log getLog(int id);
+    public List<Log> getLog(@Param("tableName")String tableName);
 
-    public List<Log> queryLog(String member_id, String time);
-
-    public void addLog(String log_source, int log_time, String log_topic, String time, String device_id,
-                       String ip, String member_id, String log_level, String modtrans, String content);
+    public List<Log> getDiff(@Param("tableNameA") String tableNameA,
+                             @Param("tableNameB") String tableNameB);
 }

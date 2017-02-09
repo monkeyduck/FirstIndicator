@@ -1,14 +1,15 @@
 package com.llc.controller;
 
 import com.caikang.com.pitch.MainLabel;
+import com.llc.model.Log;
 import com.llc.service.LogService;
-import com.llc.service.UserService;
 import com.llc.utils.CipherUtil;
 import com.llc.utils.DownloadFileUtil;
 import com.llc.utils.Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.joda.time.DateTime;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -93,31 +93,6 @@ public class LogController {
         return mv;
     }
 
-    @RequestMapping("/record")
-    public String record(){
-        return "record";
-    }
-
-    @RequestMapping("/queryLogs")
-    public ModelAndView queryLog(HttpServletRequest request, HttpServletResponse response,
-                                 @RequestParam("member_id") String member_id, @RequestParam("time") String time)
-    {
-        ModelAndView modelAndView = new ModelAndView();
-        List<com.llc.model.Log> logList = logService.queryLog(member_id, time);
-        modelAndView.addObject("logList", logList);
-        modelAndView.setViewName("queryLogs");
-        return modelAndView;
-    }
-
-    @RequestMapping("/showLog")
-    public ModelAndView searchLogById(HttpServletRequest request, HttpServletResponse response,
-                                      @RequestParam("id") int id){
-        ModelAndView modelAndView = new ModelAndView();
-        com.llc.model.Log log = logService.getLog(id);
-        modelAndView.addObject("log", log);
-        modelAndView.setViewName("showLog");
-        return modelAndView;
-    }
 
     @RequestMapping("/download_result")
     public ModelAndView downloadResult(HttpServletResponse response, @RequestParam("fileName") String suffix) throws IOException{
@@ -235,6 +210,34 @@ public class LogController {
         return mv;
     }
 
-
-
+    @RequestMapping(value = "/compare")
+    public ModelAndView compareLog(@RequestParam("date") String date) {
+        String newTableName = "aibasis_stat_bak.";
+        String oldTableName = "aibasis_stat.";
+        String[] segs = date.split("-");
+        String sdate = segs[0] + segs[1] + segs[2];
+        DateTime dt = new DateTime();
+        String sdt = dt.toString("yyyy-MM-dd");
+        List<Log> oldList;
+        List<Log> newList;
+        List<Log> diff;
+        if (sdt.equals(date)) {
+            String old = oldTableName + "cachehour";
+            String neww = newTableName + "cachehour";
+            diff = logService.getDiff(old, neww);
+        } else {
+            String old = oldTableName + "cache" + sdate;
+            String neww = newTableName+ "cache" + sdate;
+            diff = logService.getDiff(old, neww);
+        }
+        for (Log log: diff) {
+            System.out.println(log.getContent());
+        }
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("compareLog");
+        mv.addObject("diffList", diff);
+        return mv;
     }
+
+
+}
