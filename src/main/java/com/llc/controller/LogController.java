@@ -218,8 +218,6 @@ public class LogController {
         String sdate = segs[0] + segs[1] + segs[2];
         DateTime dt = new DateTime();
         String sdt = dt.toString("yyyy-MM-dd");
-        List<Log> oldList;
-        List<Log> newList;
         List<Log> diff;
         if (sdt.equals(date)) {
             String old = oldTableName + "cachehour";
@@ -230,9 +228,7 @@ public class LogController {
             String neww = newTableName+ "cache" + sdate;
             diff = logService.getDiff(old, neww);
         }
-        for (Log log: diff) {
-            System.out.println(log.getContent());
-        }
+
         ModelAndView mv = new ModelAndView();
         mv.setViewName("compareLog");
         mv.addObject("diffList", diff);
