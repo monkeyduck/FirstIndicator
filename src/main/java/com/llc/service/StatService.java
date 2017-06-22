@@ -12,11 +12,18 @@ public interface StatService {
 
     List<FirstIndicator> getStatistic(String member_type, String version);
 
+    List<FirstIndicator> getBeiwaStatistic(String member_type, String version);
+
     List<FirstIndicator> getStatisticByVersion(String version);
 
     List<FirstIndicator> getStatisticByDate(String member_type, String version);
 
+    List<FirstIndicator> getBeiwaStatisticByDate(String member_type, String version);
+
     List<String> getVersionList();
+
+    List<String> getBeiwaVersionList();
+
 
     Map<String,String> getChartData(String column);
 
@@ -26,4 +33,13 @@ public interface StatService {
 
     List<FirstIndicator> getStatisticByUserTypeByDate(String userType);
 
+    List<Integer> getTodayDailyActive(String date);
+
+    List<Integer> getBeiwaTodayDailyActive(String date);
+
+    List<Integer> getBeiwaTodayHourlyActive(String date);
+
+    List<Integer> getTodayNewUser(String date);
+
+    List<Integer> getBeiwaTodayNewUser(String date);
 }

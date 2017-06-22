@@ -21,6 +21,11 @@ public class StatServiceImpl implements StatService{
         return this.statDao.getStatistic(member_type, version);
     }
 
+    @Override
+    public List<FirstIndicator> getBeiwaStatistic(String member_type, String version) {
+        return this.statDao.getBeiwaStatistic(member_type, version);
+    }
+
     public List<FirstIndicator> getStatisticByVersion(String version){
         return this.statDao.getStatisticByVersion(version);
     }
@@ -29,8 +34,18 @@ public class StatServiceImpl implements StatService{
         return this.statDao.getStatisticByDate(member_type, version);
     }
 
+    @Override
+    public List<FirstIndicator> getBeiwaStatisticByDate(String member_type, String version) {
+        return this.statDao.getBeiwaStatisticByDate(member_type, version);
+    }
+
     public List<String> getVersionList(){
         return this.statDao.getVersionList();
+    }
+
+    @Override
+    public List<String> getBeiwaVersionList() {
+        return statDao.getBeiwaVersionList();
     }
 
     public Map<String,String> getChartData(String column){
@@ -47,6 +62,31 @@ public class StatServiceImpl implements StatService{
 
     public List<FirstIndicator> getStatisticByUserTypeByDate(String userType){
         return this.statDao.getStatisticByUserTypeByDate(userType);
+    }
+
+    @Override
+    public List<Integer> getTodayDailyActive(String date) {
+        return statDao.getTodayDailyActive(date);
+    }
+
+    @Override
+    public List<Integer> getBeiwaTodayDailyActive(String date) {
+        return statDao.getBeiwaTodayDailyActive(date);
+    }
+
+    @Override
+    public List<Integer> getBeiwaTodayHourlyActive(String date) {
+        return statDao.getBeiwaTodayHourlyActive(date);
+    }
+
+    @Override
+    public List<Integer> getTodayNewUser(String date) {
+        return statDao.getTodayNewUser(date);
+    }
+
+    @Override
+    public List<Integer> getBeiwaTodayNewUser(String date) {
+        return statDao.getBeiwaTodayNewUser(date);
     }
 
 

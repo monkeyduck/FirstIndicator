@@ -7,6 +7,7 @@
     <result column="totalUserNum" property="totalUserNum" jdbcType="INTEGER"/>
     <result column="newUserNum" property="newUserNum" jdbcType="INTEGER" />
     <result column="dailyActive" property="dailyActive" jdbcType="INTEGER" />
+    <result column="hourlyActive" property="hourlyActive" jdbcType="INTEGER" />
     <result column="validDailyActive" property="validDailyActive" jdbcType="INTEGER" />
     <result column="avgUsedTimePerUser" property="avgUsedTimePerUser" jdbcType="FLOAT" />
     <result column="validAvgUsedTimePerUser" property="validAvgUsedTimePerUser" jdbcType="FLOAT"/>
@@ -30,6 +31,12 @@
         limit 0,49) AS HourTmp ORDER BY displayTime
     </select>
 
+    <select id="getBeiwaStatistic" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT * FROM (SELECT displayTime, totalUserNum, newUserNum, hourlyActive, dailyActive,retention, retention_3,
+        retention_7 from beiwa_stat_hour where member_type=#{member_type} and version=#{version} ORDER BY id DESC
+        limit 0,49) AS HourTmp ORDER BY displayTime
+    </select>
+
     <select id="getStatisticByVersion" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
         SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_version
         where version=#{version} ORDER BY displayTime DESC limit 0,49) AS TMPTable ORDER BY displayTime
@@ -41,8 +48,18 @@
         limit 0,30) AS tmp ORDER BY displayTime
     </select>
 
+    <select id="getBeiwaStatisticByDate" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
+        SELECT * FROM (SELECT displayTime, totalUserNum, newUserNum, dailyActive, retention, retention_3, retention_7 from beiwa_stat where
+        member_type=#{member_type} and version=#{version} ORDER BY id DESC
+        limit 0,30) AS tmp ORDER BY displayTime
+    </select>
+
     <select id="getVersionList" resultType="java.lang.String">
         SELECT DISTINCT(version) from first_use where version!='' and version != 'unknown' ORDER BY version ASC
+    </select>
+
+    <select id="getBeiwaVersionList" resultType="java.lang.String">
+        SELECT DISTINCT(version) from beiwa_first_use where version!='' and version != 'unknown' ORDER BY version ASC
     </select>
 
     <select id="getStatisticByVersionByDate" resultMap="FirstIndicatorMap" parameterType="java.lang.String">
@@ -59,6 +76,31 @@
         SELECT * FROM (SELECT <include refid="FirstStat_Column_List"/> from display_usertype
         where usertype=#{userType} and displayTime like '%23:00:00%' ORDER BY displayTime DESC limit 0,15)
         AS TMPTable ORDER BY displayTime
+    </select>
+
+    <select id="getTodayDailyActive" resultType="java.lang.Integer">
+        select dailyActive from newstat.firstindicator_hour where displayTime like #{date}
+        and member_type='real' and version = '' ORDER BY id
+    </select>
+
+    <select id="getBeiwaTodayDailyActive" resultType="java.lang.Integer">
+        select dailyActive from newstat.beiwa_stat_hour where displayTime like #{date}
+        and member_type='real' and version = '' ORDER BY id
+    </select>
+
+    <select id="getBeiwaTodayHourlyActive" resultType="java.lang.Integer">
+        select hourlyActive from newstat.beiwa_stat_hour where date=#{date}
+        and member_type='real' and version = '' ORDER BY id
+    </select>
+
+    <select id="getTodayNewUser" resultType="java.lang.Integer">
+        select newUserNum from newstat.firstindicator_hour where displayTime like #{date}
+        and member_type='real' and version = '' ORDER BY id
+    </select>
+
+    <select id="getBeiwaTodayNewUser" resultType="java.lang.Integer">
+        select newUserNum from newstat.beiwa_stat_hour where displayTime like #{date}
+        and member_type='real' and version = '' ORDER BY id
     </select>
 
 </mapper>

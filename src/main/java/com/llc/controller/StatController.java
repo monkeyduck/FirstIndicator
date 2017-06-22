@@ -2,16 +2,17 @@ package com.llc.controller;
 
 import com.llc.model.FirstIndicator;
 import com.llc.service.StatService;
+import net.sf.json.JSONObject;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,27 +22,14 @@ import java.util.Map;
  * Created by llc on 16/7/12.
  */
 @Controller
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/stat")
 public class StatController {
     @Resource(name="StatService")
     private StatService statService;
 
-    private static List<String> userTypes = new ArrayList<String>();
-
-    private static Map<String, String> userTypeName = new HashMap<String, String>();
     static{
-        userTypes.add("real");
-        userTypes.add("indoor");
-        userTypes.add("market");
-        userTypes.add("innerTest");
-        userTypes.add("gray");
-        userTypes.add("vip");
-        userTypeName.put("real", "真实用户");
-        userTypeName.put("indoor","入户用户");
-        userTypeName.put("market","市场用户");
-        userTypeName.put("innerTest","公司内测");
-        userTypeName.put("gray","灰度用户");
-        userTypeName.put("vip","VIP用户");
+
     }
 
     private Logger logger = LoggerFactory.getLogger(StatController.class);
@@ -73,6 +61,23 @@ public class StatController {
                                        @RequestParam(value="version",defaultValue = "") String version,
                                        @RequestParam(value="type",defaultValue = "hour") String type){
         ModelAndView modelAndView = new ModelAndView();
+
+        // 增加一级指标用户类型，和贝瓦类型不同
+        List<String> userTypes = new ArrayList<>();
+        Map<String, String> userTypeName = new HashMap<String, String>();
+        userTypes.add("real");
+        userTypes.add("indoor");
+        userTypes.add("market");
+        userTypes.add("innerTest");
+        userTypes.add("gray");
+        userTypes.add("vip");
+        userTypeName.put("real", "真实用户");
+        userTypeName.put("indoor","入户用户");
+        userTypeName.put("market","市场用户");
+        userTypeName.put("innerTest","公司内测");
+        userTypeName.put("gray","灰度用户");
+        userTypeName.put("vip","VIP用户");
+
         List<FirstIndicator> indicators;
         if (type.equals("date")){
             indicators = statService.getStatisticByDate(member_type,version);
@@ -92,6 +97,43 @@ public class StatController {
         modelAndView.addObject("utype", member_type);
         modelAndView.addObject("ver", version);
         modelAndView.setViewName("first");
+        return modelAndView;
+    }
+
+    @RequestMapping("/sdk-first")
+    public ModelAndView crossingFilterSDK(@RequestParam(value="member_type",defaultValue = "real") String member_type,
+                                       @RequestParam(value="version",defaultValue = "") String version,
+                                       @RequestParam(value="type",defaultValue = "hour") String type){
+        ModelAndView modelAndView = new ModelAndView();
+
+        List<String> userTypes = new ArrayList<>();
+        Map<String, String> userTypeName = new HashMap<String, String>();
+        userTypes.add("real");
+        userTypes.add("innerTest");
+        userTypeName.put("real", "真实用户");
+        userTypeName.put("innerTest","公司内测");
+
+
+        List<FirstIndicator> indicators;
+        if (type.equals("date")){
+            indicators = statService.getBeiwaStatisticByDate(member_type,version);
+        }else{
+            indicators = statService.getBeiwaStatistic(member_type,version);
+        }
+        List<String> versions = statService.getBeiwaVersionList();
+        List<List<String>> chartData = getChartData(indicators);
+        List<String> compare = calCompare(type, indicators);
+
+
+        modelAndView.addObject("firstStatList", indicators);
+        modelAndView.addObject("versionList", versions);
+        modelAndView.addObject("userTypeList", userTypes);
+        modelAndView.addObject("typeName", userTypeName);
+        modelAndView.addObject("chartData", chartData);
+        modelAndView.addObject("compare", compare);
+        modelAndView.addObject("utype", member_type);
+        modelAndView.addObject("ver", version);
+        modelAndView.setViewName("sdk-first");
         return modelAndView;
     }
 
@@ -115,6 +157,70 @@ public class StatController {
             }
         }
         return compare;
+    }
+
+    @RequestMapping("/dailyActive")
+    @ResponseBody
+    public JSONObject getDailyActive() {
+        DateTime dt = new DateTime();
+        String date = dt.toString("yyyy-MM-dd");
+        date += "%";
+        List<Integer> xiaoleDaily = statService.getTodayDailyActive(date);
+        List<Integer> beiwaDaily = statService.getBeiwaTodayDailyActive(date);
+        Map<String, Map<String, Integer>> dailyMap = new HashMap<>();
+        dailyMap.put("xiaole", list2Map(xiaoleDaily));
+        dailyMap.put("beiwa", list2Map(beiwaDaily));
+        JSONObject jsonResult = JSONObject.fromObject(dailyMap);
+        return jsonResult;
+    }
+
+    @RequestMapping("/hourlyActive")
+    @ResponseBody
+    public JSONObject getHourlyActive() {
+        DateTime dt = new DateTime();
+        String date = dt.toString("yyyy-MM-dd");
+        List<Integer> beiwaHourly = statService.getBeiwaTodayHourlyActive(date);
+        Map<String, Map<String, Integer>> hourlyMap = new HashMap<>();
+        hourlyMap.put("xiaole", new HashMap<>());
+        hourlyMap.put("beiwa", list2Map(beiwaHourly));
+        JSONObject jsonResult = JSONObject.fromObject(hourlyMap);
+        return jsonResult;
+    }
+
+    @RequestMapping("/newUser")
+    @ResponseBody
+    public JSONObject getNewUser() {
+        DateTime dt = new DateTime();
+        String date = dt.toString("yyyy-MM-dd");
+        date += "%";
+        List<Integer> xiaoleNewUser = decreaseList(statService.getTodayNewUser(date));
+        List<Integer> beiwaNewUser = decreaseList(statService.getBeiwaTodayNewUser(date));
+
+        Map<String, Map<String, Integer>> newUserMap = new HashMap<>();
+        newUserMap.put("xiaole", list2Map(xiaoleNewUser));
+        newUserMap.put("beiwa", list2Map(beiwaNewUser));
+        JSONObject jsonResult = JSONObject.fromObject(newUserMap);
+        return jsonResult;
+    }
+
+    private Map<String, Integer> list2Map(List<Integer> list) {
+        int length = list.size();
+        Map<String, Integer> result = new HashMap<>();
+        for (int i = 0; i < length; ++i) {
+            result.put(""+i, list.get(i));
+        }
+        return result;
+    }
+
+    private List<Integer> decreaseList(List<Integer> list) {
+        List<Integer> newUserHour = new ArrayList<>();
+        if (list.size() > 0) {
+            newUserHour.add(list.get(0));
+            for (int i = 1; i < list.size(); ++i) {
+                newUserHour.add(list.get(i) - list.get(i - 1));
+            }
+        }
+        return newUserHour;
     }
 
 }

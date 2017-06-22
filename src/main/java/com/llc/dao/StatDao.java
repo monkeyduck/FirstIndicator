@@ -14,12 +14,20 @@ public interface StatDao {
     List<FirstIndicator> getStatistic(@Param("member_type") String member_type,
                                       @Param("version") String version);
 
+    List<FirstIndicator> getBeiwaStatistic(@Param("member_type") String member_type,
+                                      @Param("version") String version);
+
     List<FirstIndicator> getStatisticByVersion(String version);
 
     List<FirstIndicator> getStatisticByDate(@Param("member_type") String member_type,
                                             @Param("version") String version);
 
+    List<FirstIndicator> getBeiwaStatisticByDate(@Param("member_type") String member_type,
+                                            @Param("version") String version);
+
     List<String> getVersionList();
+
+    List<String> getBeiwaVersionList();
 
     Map<String,String> getChartData(String column);
 
@@ -29,5 +37,13 @@ public interface StatDao {
 
     List<FirstIndicator> getStatisticByUserTypeByDate(String userType);
 
+    List<Integer> getTodayDailyActive(String date);
 
+    List<Integer> getBeiwaTodayDailyActive(String date);
+
+    List<Integer> getBeiwaTodayHourlyActive(String date);
+
+    List<Integer> getTodayNewUser(String date);
+
+    List<Integer> getBeiwaTodayNewUser(String date);
 }

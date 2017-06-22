@@ -12,6 +12,8 @@ public class FirstIndicator {
 
     private int totalUserNum;
 
+    private int hourlyActive;
+
     private int dailyActive;
 
     private int validDailyActive;
@@ -51,6 +53,15 @@ public class FirstIndicator {
     public int getTotalUserNum() {
         return totalUserNum;
     }
+
+    public int getHourlyActive() {
+        return hourlyActive;
+    }
+
+    public void setHourlyActive(int hourlyActive) {
+        this.hourlyActive = hourlyActive;
+    }
+
 
     public float getRetention_3() {
         return retention_3;
