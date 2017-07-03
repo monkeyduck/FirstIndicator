@@ -46,4 +46,10 @@ public interface StatDao {
     List<Integer> getTodayNewUser(String date);
 
     List<Integer> getBeiwaTodayNewUser(String date);
+
+    List<Float> getOneDayRetention(String date);
+
+    List<Float> getThreeDayRetention(String date);
+
+    List<Float> getSevenDayRetention(String date);
 }

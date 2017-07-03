@@ -39,6 +39,7 @@
                 /stat/dailyActive = anon
                 /stat/hourlyActive = anon
                 /stat/newUser = anon
+                /stat/retention = anon
                 /** = authc
             </value>
         </property>

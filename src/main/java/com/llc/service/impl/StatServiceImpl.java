@@ -89,5 +89,20 @@ public class StatServiceImpl implements StatService{
         return statDao.getBeiwaTodayNewUser(date);
     }
 
+    @Override
+    public List<Float> getOneDayRetention(String date) {
+        return statDao.getOneDayRetention(date);
+    }
+
+    @Override
+    public List<Float> getThreeDayRetention(String date) {
+        return statDao.getThreeDayRetention(date);
+    }
+
+    @Override
+    public List<Float> getSevenDayRetention(String date) {
+        return statDao.getSevenDayRetention(date);
+    }
+
 
 }

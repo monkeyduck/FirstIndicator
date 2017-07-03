@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by llc on 16/7/12.
@@ -203,6 +200,22 @@ public class StatController {
         return jsonResult;
     }
 
+    @RequestMapping("/retention")
+    @ResponseBody
+    public JSONObject getRetention() {
+        DateTime dt = new DateTime();
+        String date = dt.toString("yyyy-MM-dd");
+        List<Float> oneRetention = statService.getOneDayRetention(date);
+        List<Float> threeRetention = statService.getThreeDayRetention(date);
+        List<Float> sevenRetention = statService.getSevenDayRetention(date);
+        Map<String, Map<String, Float>> retentionMap = new HashMap<>();
+        retentionMap.put("1日留存", list2DateMap(oneRetention, dt));
+        retentionMap.put("3日留存", list2DateMap(threeRetention, dt));
+        retentionMap.put("7日留存", list2DateMap(sevenRetention, dt));
+        JSONObject jsonObject = JSONObject.fromObject(retentionMap);
+        return jsonObject;
+    }
+
     private Map<String, Integer> list2Map(List<Integer> list) {
         int length = list.size();
         Map<String, Integer> result = new HashMap<>();
@@ -210,6 +223,17 @@ public class StatController {
             result.put(""+i, list.get(i));
         }
         return result;
+    }
+
+    private LinkedHashMap<String, Float> list2DateMap(List<Float> list, DateTime dt) {
+        LinkedHashMap<String, Float> resultMap = new LinkedHashMap<>();
+        dt = dt.minusDays(list.size());
+        for (int i = 0 ; i < list.size(); ++i) {
+            String date = dt.toString("yyyy-MM-dd");
+            resultMap.put(date, list.get(i));
+            dt = dt.plusDays(1);
+        }
+        return resultMap;
     }
 
     private List<Integer> decreaseList(List<Integer> list) {

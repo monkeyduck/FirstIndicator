@@ -103,4 +103,19 @@
         and member_type='real' and version = '' ORDER BY id
     </select>
 
+    <select id="getOneDayRetention" resultType="java.lang.Float">
+        select retention from (SELECT id, retention from newstat.beiwa_stat where displayTime &lt;= #{date} and member_type='real' and version = ''
+        ORDER BY id DESC limit 0,14) as tmp ORDER BY id ASC;
+    </select>
+
+    <select id="getThreeDayRetention" resultType="java.lang.Float">
+        select retention_3 from (SELECT id, retention_3 from newstat.beiwa_stat where displayTime &lt;= #{date} and member_type='real' and version = ''
+        ORDER BY id DESC limit 0,14) as tmp ORDER BY id ASC;
+    </select>
+
+    <select id="getSevenDayRetention" resultType="java.lang.Float">
+        select retention_7 from (SELECT id, retention_7 from newstat.beiwa_stat where displayTime &lt;= #{date} and member_type='real' and version = ''
+        ORDER BY id DESC limit 0,14) as tmp ORDER BY id ASC;
+    </select>
+
 </mapper>
